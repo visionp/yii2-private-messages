@@ -3,7 +3,7 @@
 use yii\db\Schema;
 use yii\db\Migration;
 
-class add_table_messages extends Migration
+class m150521_131654_add_table_messages extends Migration
 {
     public function up()
     {
