@@ -27,5 +27,7 @@ Usage
 
 Once the extension is installed, simply use it in your code by  :
 
+php yii migrate --migrationPath=@yii/rbac/migrations/
+
 ```php
 <?= \vision\messages\AutoloadExample::widget(); ?>```
