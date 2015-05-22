@@ -17,9 +17,7 @@ use vision\messages\exceptions\EceptionMessages;
 class MessageAction extends Action {
 
     public function run() {
-
-
-
+        echo 'test';
     }
 
 } 
