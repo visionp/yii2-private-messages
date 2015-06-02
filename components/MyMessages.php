@@ -230,7 +230,7 @@ class MyMessages extends Component {
             ->from("$table_name as msg")
             ->leftJoin("$this->userTableName as usr1", 'usr1.id = msg.from_id')
             ->leftJoin("$this->userTableName as usr2", 'usr2.id = msg.whom_id')
-            ->where(['msg.whom_id' => $whom_id]);
+            ->where(['msg.whom_id' => $whom_id, 'msg.is_delete_whom' => 0]);
 
         if($from_id) {
             $query->andWhere(['msg.from_id' => $from_id]);
