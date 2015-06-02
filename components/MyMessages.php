@@ -39,21 +39,48 @@ class MyMessages extends Component {
     }
 
 
+    public function sendMessage($whom_id, $message) {
+        $result = null;
+        if(is_array($whom_id)) {
+            $result = $this->_sendMessages($whom_id, $message);
+        } else {
+            $result = $this->_sendMessage($whom_id, $message);
+        }
+        return $result;
+    }
+
+
     /**
      * Method to sendMessage.
      *
      * @param $whom_id
      * @param $message
      *
-     * @throws EceptionMessages
      * @return array
      */
-    public function sendMessage($whom_id, $message) {
+    protected function _sendMessage($whom_id, $message) {
         $model = new Messages();
         $model->from_id = \Yii::$app->user->id;
         $model->whom_id = $whom_id;
         $model->message = $message;
         return $this->saveData($model, self::EVENT_SEND);
+    }
+
+
+    /**
+     * Method to many messages.
+     *
+     * @param $whom_ids
+     * @param $message
+     *
+     * @return array
+     */
+    protected function _sendMessages(Array $whom_ids, $message) {
+        $result = Array();
+        foreach($whom_ids as $id) {
+            $result[] = $this->sendMessage($id, $message);
+        }
+        return $result;
     }
 
 
@@ -66,7 +93,7 @@ class MyMessages extends Component {
      * @throws EceptionMessages
      * @return array
      */
-    public function getAllMessages($whom_id, $from_id) {
+    protected function _getAllMessages($whom_id, $from_id) {
         return $this->getMessages($whom_id, $from_id);
     }
 
@@ -80,7 +107,7 @@ class MyMessages extends Component {
      * @throws EceptionMessages
      * @return array
      */
-    public function getNewMessages($whom_id, $from_id) {
+    protected function _getNewMessages($whom_id, $from_id) {
         return $this->getMessages($whom_id, $from_id, Messages::STATUS_NEW);
     }
 
@@ -91,7 +118,7 @@ class MyMessages extends Component {
      * @throws EceptionMessages
      * @return array
      */
-    public function getMyMessages() {
+    protected function _getMyMessages() {
         return $this->getMessages(\Yii::$app->user->id);
     }
 
@@ -105,10 +132,14 @@ class MyMessages extends Component {
      * @throws EceptionMessages
      * @return array
      */
-    public function changeStatusMessage($id, $status) {
+    protected function changeStatusMessage($id, $status) {
         $model = Messages::findOne($id);
+        $current_user_id = \Yii::$app->user->identity->id;
         if(!$model) {
             throw new EceptionMessages('Message not found.');
+        }
+        if($model->from_id != $current_user_id && $model->whom_id != $current_user_id) {
+            throw new EceptionMessages('Message not found for this user.');
         }
         $model->status = $status;
         return $this->saveData($model, self::EVENT_STATUS);
@@ -190,7 +221,7 @@ class MyMessages extends Component {
      * @throws EceptionMessages
      * @return array
      */
-    protected function getMessages($whom_id, $from_id = null, $type = null) {
+    protected function getMessages($whom_id, $from_id = null, $type = null, $last_id = null) {
         $table_name = Messages::tableName();
 
         $query = new \yii\db\Query();
@@ -199,17 +230,22 @@ class MyMessages extends Component {
             ->from("$table_name as msg")
             ->leftJoin("$this->userTableName as usr1", 'usr1.id = msg.from_id')
             ->leftJoin("$this->userTableName as usr2", 'usr2.id = msg.whom_id')
-            ->where(['msg.whom_id' => $whom_id]);
+            ->where(['msg.whom_id' => $whom_id, 'msg.is_delete_whom' => 0]);
 
         if($from_id) {
             $query->andWhere(['msg.from_id' => $from_id]);
         } else {
             $query->orWhere(['msg.from_id' => $whom_id]);
         }
+
         if($type) {
             $query->andWhere(['=', 'msg.status', $type]);
         }else {
             $query->andWhere(['!=', 'msg.status', Messages::STATUS_DELETE]);
+        }
+
+        if($last_id){
+            $query->andWhere(['>', 'msg.id', $last_id]);
         }
 
         $return = Array();
