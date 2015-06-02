@@ -134,10 +134,13 @@ class MyMessages extends Component {
      */
     protected function changeStatusMessage($id, $status) {
         $model = Messages::findOne($id);
+        $current_user_id = \Yii::$app->user->identity->id;
         if(!$model) {
             throw new EceptionMessages('Message not found.');
         }
-
+        if($model->from_id != $current_user_id && $model->whom_id != $current_user_id) {
+            throw new EceptionMessages('Message not found for this user.');
+        }
         $model->status = $status;
         return $this->saveData($model, self::EVENT_STATUS);
     }
