@@ -49,6 +49,29 @@ class MyMessages extends Component {
         return $result;
     }
 
+    /**
+     * Method to getMyMessages.
+     *
+     * @throws EceptionMessages
+     * @return array
+     */
+    public function getMyMessages() {
+        return $this->getMessages(\Yii::$app->user->id);
+    }
+
+    /**
+     * Method to getAllMessages.
+     *
+     * @param $whom_id
+     * @param $from_id
+     *
+     * @throws EceptionMessages
+     * @return array
+     */
+    public function getAllMessages($whom_id, $from_id) {
+        return $this->getMessages($whom_id, $from_id);
+    }
+
 
     /**
      * Method to sendMessage.
@@ -85,20 +108,6 @@ class MyMessages extends Component {
 
 
     /**
-     * Method to getAllMessages.
-     *
-     * @param $whom_id
-     * @param $from_id
-     *
-     * @throws EceptionMessages
-     * @return array
-     */
-    protected function _getAllMessages($whom_id, $from_id) {
-        return $this->getMessages($whom_id, $from_id);
-    }
-
-
-    /**
      * Method to getNewMessages.
      *
      * @param $whom_id
@@ -113,17 +122,6 @@ class MyMessages extends Component {
 
 
     /**
-     * Method to getMyMessages.
-     *
-     * @throws EceptionMessages
-     * @return array
-     */
-    protected function _getMyMessages() {
-        return $this->getMessages(\Yii::$app->user->id);
-    }
-
-
-    /**
      * Method to changeStatusMessage.
      *
      * @param $id
@@ -132,8 +130,9 @@ class MyMessages extends Component {
      * @throws EceptionMessages
      * @return array
      */
-    protected function changeStatusMessage($id, $status) {
+    protected function changeStatusMessage($id, $status, $is_delete = null) {
         $model = Messages::findOne($id);
+        $status_name = 'status';
         $current_user_id = \Yii::$app->user->identity->id;
         if(!$model) {
             throw new EceptionMessages('Message not found.');
@@ -141,7 +140,17 @@ class MyMessages extends Component {
         if($model->from_id != $current_user_id && $model->whom_id != $current_user_id) {
             throw new EceptionMessages('Message not found for this user.');
         }
-        $model->status = $status;
+        if($is_delete) {
+            switch ($current_user_id) {
+                case $model->from_id:
+                    $status_name = 'is_delete_from';
+                    break;
+                case $model->whom_id:
+                    $status_name = 'is_delete_whom';
+                    break;
+            }
+        }
+        $model->$status_name = $status;
         return $this->saveData($model, self::EVENT_STATUS);
     }
 
@@ -155,7 +164,7 @@ class MyMessages extends Component {
      * @return Messages
      */
     public function deleteMessage($id) {
-        return $this->changeStatusMessage($id, Messages::STATUS_DELETE);
+        return $this->changeStatusMessage($id, 1, 1);
     }
 
 
@@ -166,24 +175,18 @@ class MyMessages extends Component {
      * @return Messages
      */
     public function getAllUsers() {
-        $model = new $this->modelUser();
-        $users = $model::find()->all();
+        $table_name = Messages::tableName();
+        $query = new \yii\db\Query();
+        $query
+            ->select(["$this->userTableName.username", "$this->userTableName.id", "count($table_name.message) as  cnt_mess"])
+            ->from($this->userTableName)
+            ->leftJoin($table_name, "$table_name.from_id = $this->userTableName.id")
+            ->where(["$table_name.is_delete_from" => 0])
+            ->andWhere(["$table_name.status" => 1])
+            ->andWhere(["$table_name.whom_id" => \Yii::$app->user->identity->id])
+            ->groupBy("$this->userTableName.username");
+        $users = $query->all();
         return $users;
-    }
-
-
-    /**
-     * Method to deleteMessage.
-     *
-     * @param $id
-     *
-     * @throws EceptionMessages
-     * @return ActiveRecord
-     */
-    public function getUser($id) {
-        $model = new $this->modelUser();
-        $user = $model::findOne($id);
-        return $user;
     }
 
 
@@ -226,11 +229,11 @@ class MyMessages extends Component {
 
         $query = new \yii\db\Query();
         $query
-            ->select(['msg.*', "usr1.$this->attributeNameUser as from_name", "usr2.$this->attributeNameUser as whom_name"])
+            ->select(['msg.created_at', 'msg.id', 'msg.status', 'msg.message', "usr1.$this->attributeNameUser as from_name", "usr2.$this->attributeNameUser as whom_name"])
             ->from("$table_name as msg")
             ->leftJoin("$this->userTableName as usr1", 'usr1.id = msg.from_id')
             ->leftJoin("$this->userTableName as usr2", 'usr2.id = msg.whom_id')
-            ->where(['msg.whom_id' => $whom_id, 'msg.is_delete_whom' => 0]);
+            ->where(['msg.whom_id' => $whom_id]);
 
         if($from_id) {
             $query->andWhere(['msg.from_id' => $from_id]);
@@ -241,7 +244,7 @@ class MyMessages extends Component {
         if($type) {
             $query->andWhere(['=', 'msg.status', $type]);
         }else {
-            $query->andWhere(['!=', 'msg.status', Messages::STATUS_DELETE]);
+            $query->andWhere(['!=', 'msg.is_delete_whom', 1]);
         }
 
         if($last_id){
@@ -263,4 +266,17 @@ class MyMessages extends Component {
         return $return;
     }
 
-} 
+    public static function unixToDate ($arr){
+        if(!is_array($arr) && !is_object($arr)) {
+            return $arr;
+        }
+        if(isset($arr['created_at'])) {
+            $arr['created_at'] = \Yii::$app->formatter->asDatetime( $arr['created_at'], 'php:d-m-Y H:i');
+        }
+        if(isset($arr['updated_at'])) {
+            $arr['updated_at'] = \Yii::$app->formatter->asDatetime( $arr['updated_at'], 'php:d-m-Y H:i');
+        }
+        return $arr;
+    }
+
+}
