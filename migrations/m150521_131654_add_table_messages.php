@@ -18,6 +18,8 @@ class m150521_131654_add_table_messages extends Migration
             'whom_id'    => Schema::TYPE_INTEGER . ' NOT NULL',
             'message'    => Schema::TYPE_STRING  . '(750) NOT NULL',
             'status'     => Schema::TYPE_INTEGER . ' DEFAULT 0',
+            'is_delete_from' => Schema::TYPE_INTEGER . ' DEFAULT 0',
+            'is_delete_whom' => Schema::TYPE_INTEGER . ' DEFAULT 0',
             'created_at' => Schema::TYPE_INTEGER . ' NOT NULL',
             'updated_at' => Schema::TYPE_INTEGER . ' NOT NULL'
         ], $tableOptions);

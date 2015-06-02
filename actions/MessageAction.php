@@ -14,10 +14,28 @@ use vision\messages\exceptions\EceptionMessages;
 
 
 
-class MessageAction extends Action {
+class MessageApiAction extends Action {
 
     public function run() {
-        echo 'test';
+
+    }
+
+
+    protected function updateMessage() {
+        $id_last_message = \Yii::$app->request->post('id_last_message');
+        while(true){
+            sleep(5);
+        }
+
+    }
+
+
+    protected function sendJson($data) {
+        $response = Yii::$app->response;
+        $response->format = \yii\web\Response::FORMAT_JSON;
+        $response->data = $data;
+        $response->send();
+        die();
     }
 
 } 
