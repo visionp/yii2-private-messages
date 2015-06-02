@@ -8,6 +8,7 @@ $(window).ready(function() {
         }
     };
 
+
     var getAllMessages = function (from_id) {
         $.ajax({
             type: "POST",
