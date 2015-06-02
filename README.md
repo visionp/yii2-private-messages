@@ -30,7 +30,7 @@ Usage
 
 Once the extension is installed, simply use it in your code by  :
 
-php yii migrate --migrationPath=@yii/rbac/migrations/
+yii migrate --migrationPath=@vendor/vision/yii2-private-messages/migrations/
 
 ```php
 <?= \vision\messages\AutoloadExample::widget(); ?>```
