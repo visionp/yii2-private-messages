@@ -44,6 +44,12 @@ class MessageApiAction extends Action {
     }
 
 
+    protected function getNewMessage() {
+        $from_id = \Yii::$app->request->get('from_id', false);
+        return \Yii::$app->mymessages->getNewMessages(\Yii::$app->user->identity->id, $from_id);
+    }
+
+
     protected function updateMessage() {
         $id_last_message = \Yii::$app->request->post('id_last_message');
         while(true){

@@ -73,6 +73,11 @@ class MyMessages extends Component {
     }
 
 
+    public function getNewMessages($whom_id, $from_id) {
+        return $this->getMessages($whom_id, $from_id, 1);
+    }
+
+
     /**
      * Method to sendMessage.
      *
@@ -229,17 +234,12 @@ class MyMessages extends Component {
 
         $query = new \yii\db\Query();
         $query
-            ->select(['msg.created_at', 'msg.id', 'msg.status', 'msg.message', "usr1.$this->attributeNameUser as from_name", "usr2.$this->attributeNameUser as whom_name"])
+            ->select(['msg.created_at', 'msg.id', 'msg.status', 'msg.message', "usr1.id as from_id", "usr1.$this->attributeNameUser as from_name", "usr2.id as whom_id", "usr2.$this->attributeNameUser as whom_name"])
             ->from("$table_name as msg")
             ->leftJoin("$this->userTableName as usr1", 'usr1.id = msg.from_id')
             ->leftJoin("$this->userTableName as usr2", 'usr2.id = msg.whom_id')
-            ->where(['msg.whom_id' => $whom_id]);
-
-        if($from_id) {
-            $query->andWhere(['msg.from_id' => $from_id]);
-        } else {
-            $query->orWhere(['msg.from_id' => $whom_id]);
-        }
+            ->where(['msg.whom_id' => $whom_id, 'msg.from_id' => $from_id])
+            ->orWhere(['msg.from_id' => $whom_id, 'msg.whom_id' => $from_id]);
 
         if($type) {
             $query->andWhere(['=', 'msg.status', $type]);
@@ -251,10 +251,10 @@ class MyMessages extends Component {
             $query->andWhere(['>', 'msg.id', $last_id]);
         }
 
-        $return = Array();
+        $return = $query->orderBy('msg.id')->all();
         $ids = Array();
-        foreach($query->all() as $m) {
-            $return[$m['from_name']][] = $m;
+        foreach($return as $m) {
+            //$return[$m['from_name']][] = $m;
             $ids[] = $m['id'];
         }
 
@@ -263,8 +263,10 @@ class MyMessages extends Component {
             Messages::updateAll(['status' => Messages::STATUS_READ], ['in', 'id', $ids]);
         }
 
-        return $return;
+        $user_id = \Yii::$app->user->getId();
+        return array_map(function ($r) use ($user_id) { $r['i_am_sender'] = $r['from_id'] == $user_id; return $r;}, $return);
     }
+
 
     public static function unixToDate ($arr){
         if(!is_array($arr) && !is_object($arr)) {

@@ -11,15 +11,26 @@ class PrivateMessage extends Widget {
 
     public $buttonName = "Отправить";
     protected $html;
+    protected $uniq_id;
+
+
+    public function init() {
+        parent::init();
+        $this->uniq_id = $this->createId();
+    }
+
 
     public function run(){
         MessageAssets::register($this->view);
-        $this->html = '';
+        $this->addJs();
+        $this->html = '<div id="' . $this->uniq_id . '">';
         $this->html .= $this->getListUsers();
         $this->html .= $this->getBoxMessages();
         $this->html .= $this->getFormInput();
+        $this->html .= '</div>';
         return $this->html;
     }
+
 
     protected function getListUsers() {
         $users = \Yii::$app->mymessages->getAllUsers();
@@ -37,18 +48,38 @@ class PrivateMessage extends Widget {
 
     protected function getBoxMessages() {
         $html = '';
-        $html .= '<div class="message-container" id="message-container"></div>';
+        $html .= '<div class="message-container"></div>';
         return $html;
     }
 
 
     protected function getFormInput() {
-        $html = '<form action="#" method="POST">';
+        $html = '<form action="#" id="message-form" method="POST">';
         $html .= '<input type="text" name="input_message">';
-        $html .= '<input type="hidden" name="message_id_user">';
+        $html .= '<input type="hidden" name="message_id_user" value="10">';
         $html .= '<button type="submit">' . $this->buttonName . '</button>';
         $html .= '</form>';
         return $html;
+    }
 
+
+    protected function addJs() {
+        $var_name = 'mess_' . $this->uniq_id;
+        $script = 'var ' . $var_name . ' = new messages("#'. $this->uniq_id .'");';
+        $script .= "$var_name.getAllMessages();";
+        $view = $this->getView();
+        $view->registerJs($script, $view::POS_READY);
+    }
+
+
+    protected function createId() {
+        $length = 5;
+        $chars = 'abdefhiknrstyzABDEFGHKNQRSTYZ23456789';
+        $numChars = strlen($chars);
+        $string = '';
+        for ($i = 0; $i < $length; $i++) {
+            $string .= substr($chars, rand(1, $numChars) - 1, 1);
+        }
+        return 'messag_'.$string;
     }
 }
