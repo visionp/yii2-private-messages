@@ -15,7 +15,7 @@ class MessageAssets extends \yii\web\AssetBundle {
         'js/vision_messages.js',
     ];
     public $css = [
-        'css/vision_messages.css',
+        //'css/vision_messages.css',
     ];
     public $depends = [
         'yii\web\JqueryAsset'

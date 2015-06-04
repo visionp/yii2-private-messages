@@ -59,6 +59,17 @@ class MessageApiAction extends Action {
     }
 
 
+    protected function sendMessage() {
+        $whom_id = \Yii::$app->request->get('whom_id', false);
+        $message = \Yii::$app->request->get('text', false);
+        if(!$whom_id && !$message) {
+            $this->sendJson(['status' => false, 'message' => 'No data.']);
+        }
+
+        return \Yii::$app->mymessages->sendMessage($whom_id, $message);
+    }
+
+
     protected function sendJson($data) {
         $response = Yii::$app->response;
         $response->format = \yii\web\Response::FORMAT_JSON;
@@ -67,4 +78,4 @@ class MessageApiAction extends Action {
         die();
     }
 
-} 
+}

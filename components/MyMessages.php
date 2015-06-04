@@ -91,6 +91,7 @@ class MyMessages extends Component {
         $model->from_id = \Yii::$app->user->id;
         $model->whom_id = $whom_id;
         $model->message = $message;
+
         return $this->saveData($model, self::EVENT_SEND);
     }
 
@@ -181,16 +182,19 @@ class MyMessages extends Component {
      */
     public function getAllUsers() {
         $table_name = Messages::tableName();
-        $query = new \yii\db\Query();
-        $query
-            ->select(["$this->userTableName.username", "$this->userTableName.id", "count($table_name.message) as  cnt_mess"])
-            ->from($this->userTableName)
-            ->leftJoin($table_name, "$table_name.from_id = $this->userTableName.id")
-            ->where(["$table_name.is_delete_from" => 0])
-            ->andWhere(["$table_name.status" => 1])
-            ->andWhere(["$table_name.whom_id" => \Yii::$app->user->identity->id])
-            ->groupBy("$this->userTableName.username");
-        $users = $query->all();
+
+        $sql = "select usr.id, usr.$this->attributeNameUser as username, msg.cnt as cnt_mess ";
+        $sql .= "from $this->userTableName as usr ";
+        $sql .= "left join ";
+        $sql .= "(select from_id, count(id) as cnt from $table_name where status = 1 and whom_id = :user_id GROUP by from_id) as msg ON usr.id = msg.from_id ";
+        $sql .= " where usr.id != :user_id ";
+
+        $connection = \Yii::$app->db;
+        $model = $connection->createCommand($sql);
+        $model->bindValue(':user_id', \Yii::$app->user->identity->id);
+
+        $users = $model->queryAll();
+
         return $users;
     }
 
