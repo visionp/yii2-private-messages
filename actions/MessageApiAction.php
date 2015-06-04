@@ -70,11 +70,31 @@ class MessageApiAction extends Action {
     }
 
 
+    protected function pooling() {
+        $last_id = \Yii::$app->request->get('last_id', false);
+        if(!$last_id) {
+            sleep(7);
+            $this->sendJson(['status' => false, 'message' => 'No last id, info:' . print_r($last_id, 1)]);
+        }
+        $time_cancel = (int) ini_get('max_execution_time') - 1;
+        $duration = $time_cancel < 25 ? $time_cancel : 25;
+        $endTime = time() + $duration;
+        while(time() < $endTime){
+            $data = \Yii::$app->mymessages->checkMessage($last_id);
+            if (count($data) > 0) {
+                $this->sendJson($data);
+            }
+            sleep(7);
+        }
+    }
+
+
     protected function sendJson($data) {
         $response = Yii::$app->response;
         $response->format = \yii\web\Response::FORMAT_JSON;
         $response->data = $data;
         $response->send();
+        flush();
         die();
     }
 

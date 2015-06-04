@@ -59,6 +59,12 @@ class MyMessages extends Component {
         return $this->getMessages(\Yii::$app->user->id);
     }
 
+
+    public function checkMessage($last_id){
+        $whom_id = \Yii::$app->user->getId();
+        return $this->getMessages($whom_id, false, 1, $last_id);
+    }
+
     /**
      * Method to getAllMessages.
      *
@@ -241,9 +247,17 @@ class MyMessages extends Component {
             ->select(['msg.created_at', 'msg.id', 'msg.status', 'msg.message', "usr1.id as from_id", "usr1.$this->attributeNameUser as from_name", "usr2.id as whom_id", "usr2.$this->attributeNameUser as whom_name"])
             ->from("$table_name as msg")
             ->leftJoin("$this->userTableName as usr1", 'usr1.id = msg.from_id')
-            ->leftJoin("$this->userTableName as usr2", 'usr2.id = msg.whom_id')
-            ->where(['msg.whom_id' => $whom_id, 'msg.from_id' => $from_id])
-            ->orWhere(['msg.from_id' => $whom_id, 'msg.whom_id' => $from_id]);
+            ->leftJoin("$this->userTableName as usr2", 'usr2.id = msg.whom_id');
+
+
+        if($from_id) {
+            $query
+                ->where(['msg.whom_id' => $whom_id, 'msg.from_id' => $from_id])
+                ->orWhere(['msg.from_id' => $whom_id, 'msg.whom_id' => $from_id]);
+        } else {
+            $query->where(['msg.whom_id' => $whom_id]);
+        }
+
 
         if($type) {
             $query->andWhere(['=', 'msg.status', $type]);
@@ -259,11 +273,13 @@ class MyMessages extends Component {
         $ids = Array();
         foreach($return as $m) {
             //$return[$m['from_name']][] = $m;
-            $ids[] = $m['id'];
+            if($m['whom_id'] == \Yii::$app->user->getId()) {
+                $ids[] = $m['id'];
+            }
         }
 
         //change status to is_read
-        if(count($ids) > 0 && $whom_id == \Yii::$app->user->id) {
+        if(count($ids) > 0) {
             Messages::updateAll(['status' => Messages::STATUS_READ], ['in', 'id', $ids]);
         }
 
