@@ -55,7 +55,6 @@ class MessageApiAction extends Action {
         while(true){
             sleep(5);
         }
-
     }
 
 
@@ -66,7 +65,15 @@ class MessageApiAction extends Action {
             $this->sendJson(['status' => false, 'message' => 'No data.']);
         }
 
-        return \Yii::$app->mymessages->sendMessage($whom_id, $message);
+        \Yii::$app->mymessages->sendMessage($whom_id, $message);
+        return \Yii::$app->mymessages->getNewMessages(\Yii::$app->user->identity->id, $whom_id);
+    }
+
+
+    protected function deleteMessage() {
+        $id_message = \Yii::$app->request->get('id_message', false);
+        $result = \Yii::$app->mymessages->deleteMessage($id_message);
+        return $result['id'];
     }
 
 
@@ -77,13 +84,19 @@ class MessageApiAction extends Action {
             $this->sendJson(['status' => false, 'message' => 'No last id, info:' . print_r($last_id, 1)]);
         }
         $time_cancel = (int) ini_get('max_execution_time') - 1;
-        $duration = $time_cancel < 25 ? $time_cancel : 25;
-        $endTime = time() + $duration;
+        $duration = $time_cancel < 30 ? $time_cancel : 25;
+        $endTime = time() + $duration; $i=0;
         while(time() < $endTime){
+            $i++;
+            if($i > 4) {
+                $this->sendJson('dddd');
+            }
+            /*
             $data = \Yii::$app->mymessages->checkMessage($last_id);
             if (count($data) > 0) {
                 $this->sendJson($data);
             }
+            */
             sleep(7);
         }
     }

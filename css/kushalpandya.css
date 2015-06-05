@@ -266,3 +266,27 @@ body {
     background:      -o-linear-gradient(#E9E9E9, #F5F5F5);
     background:         linear-gradient(#E9E9E9, #F5F5F5);
 }
+
+ul.list_users li.active {
+    background-color: rgb(61, 61, 61);
+}
+
+ul.list_users li.active span{
+    color: rgb(170, 175, 179);
+}
+
+span.delete-message {
+    transform: rotate(90deg);
+    display: block;
+    float: right;
+    position: relative;
+    top: -15px;
+    right: 2px;
+    margin-left: 10px;
+    color: rgb(100, 66, 224);
+    font-weight: bold;
+}
+
+span.delete-message:hover {
+    color: red;
+}

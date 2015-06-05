@@ -9,6 +9,7 @@ function getUrl() {
 
 //Работа с окном сообщением
 var messages = (function() {
+    "use strict";
     var di = {};
 
     return function(id_block_) {
@@ -59,13 +60,22 @@ var messages = (function() {
                 success: function(msg){
                     if(msg.status) {
                         self.inputText.val('');
-                        self.getNewMessages();
+                        self.updateBox(msg.data);
                     } else {
                         self.log('error: ' + 'sendMessage');
                         self.log(msg);
                     }
                 }
             });
+        };
+
+        var changeActiveUser = function(id) {
+            var currentId = self.inputFromId.val();
+            if(currentId != id) {
+                self.inputFromId.val(id);
+                self.mainBox.find('li.contact').removeClass('active');
+                self.mainBox.find('li.contact[data-user=' + id + ']').addClass('active');
+            }
         };
 
         this.reInit = function() {
@@ -90,9 +100,11 @@ var messages = (function() {
             self.lastId = 1;
         };
 
+
         this.createHtmlMessage = function(n) {
             var html = '';
-            html += '<div class="message ' + (n['i_am_sender'] ? 'bubble-right' : 'bubble-left') + '">';
+            html += '<div data-id="' + n['id']  +'" class="message ' + (n['i_am_sender'] ? 'bubble-right' : 'bubble-left') + '">';
+            html += '<span class="delete-message">X</span>';
             html += '<label class="message-user">' + n['from_name'] + '</label>';
             html += '<label class="message-timestamp">' + n['created_at'] +'</label>';
             html += '<p>' + n['message'] + '</p>';
@@ -102,6 +114,22 @@ var messages = (function() {
 
         this.fromPooling = function(m) {
             self.log(m);
+        };
+
+        self.deleteMessage = function(idMessage) {
+            $.ajax({
+                type: "GET",
+                url: self.base_url,
+                data: {id_message:idMessage, action:'deleteMessage'},
+                success: function(msg){
+                    if(msg.status) {
+                        self.mainBox.find('div.message[data-id=' + msg['data'] + ']').remove();
+                    } else {
+                        self.log('error: ' + 'deleteMessage');
+                        self.log(msg);
+                    }
+                }
+            });
         };
 
         this.updateBox = function(m) {
@@ -129,11 +157,21 @@ var messages = (function() {
             return false;
         });
 
+
+        self.mainBox.click(function(event) {
+            var target = $(event.target);
+            if(target.is('span.delete-message')) {
+                var idMessage = target.parent('div.message').data('id');
+                self.deleteMessage(idMessage);
+                return false;
+            }
+        });
+
         this.mainBox.find('.contact').click(function(event){
             var user_id = $(this).data('user');
             if(user_id) {
                 self.clearBox();
-                self.inputFromId.val(user_id);
+                changeActiveUser(user_id);
                 self.inputText.attr('disabled', false);
                 self.getAllMessages();
             }
@@ -141,9 +179,11 @@ var messages = (function() {
 
         di[id_block] = this;
 
-        //this.pools = new pooling(self.lastId);
-        //this.pools.addListener('newData', this.fromPooling);
-
+        /*
+        this.pools = new pooling(self.lastId);
+        this.pools.addListener('newData', this.fromPooling);
+        this.pools.start();
+        */
     }
 })();
 
@@ -151,6 +191,7 @@ var messages = (function() {
 
 //Пуллинг, данные отдаются через события
 var pooling = (function() {
+    "use strict";
     var lastId = 0;
     var di = false;
 
@@ -171,11 +212,13 @@ var pooling = (function() {
                 url:getUrl(),
                 type:"GET",
                 data:{last_id:lastId, action:'pooling'},
-                cahce:false,
-                timeout:10000,
-                async:true,
+                //cahce:false,
+                //timeout:10000,
+                //async:true,
                 success:function(result){
-                    self.triggerEvent('newData', result);
+                    if(result) {
+                        self.triggerEvent('newData', result);
+                    }
                 },
                 complete:function() {
                     if(activeTimeout) {
@@ -187,6 +230,7 @@ var pooling = (function() {
 
         this.start = function() {
             if(!activeTimeout) {
+                self.log(15);
                 pooling();
                 activeTimeout = true;
             }
@@ -236,7 +280,5 @@ var pooling = (function() {
                 }
             }
         };
-
-        this.start();
     };
 })();

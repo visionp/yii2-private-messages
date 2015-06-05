@@ -142,7 +142,7 @@ class MyMessages extends Component {
      * @throws EceptionMessages
      * @return array
      */
-    protected function changeStatusMessage($id, $status, $is_delete = null) {
+    protected function changeStatusMessage($id, $status, $is_delete = false) {
         $model = Messages::findOne($id);
         $status_name = 'status';
         $current_user_id = \Yii::$app->user->identity->id;
@@ -241,10 +241,11 @@ class MyMessages extends Component {
      */
     protected function getMessages($whom_id, $from_id = null, $type = null, $last_id = null) {
         $table_name = Messages::tableName();
+        $my_id = \Yii::$app->user->getId();
 
         $query = new \yii\db\Query();
         $query
-            ->select(['msg.created_at', 'msg.id', 'msg.status', 'msg.message', "usr1.id as from_id", "usr1.$this->attributeNameUser as from_name", "usr2.id as whom_id", "usr2.$this->attributeNameUser as whom_name"])
+            ->select(['FROM_UNIXTIME(msg.created_at, "%d-%m-%Y %H:%i:%S") as created_at', 'msg.id', 'msg.status', 'msg.message', "usr1.id as from_id", "usr1.$this->attributeNameUser as from_name", "usr2.id as whom_id", "usr2.$this->attributeNameUser as whom_name"])
             ->from("$table_name as msg")
             ->leftJoin("$this->userTableName as usr1", 'usr1.id = msg.from_id')
             ->leftJoin("$this->userTableName as usr2", 'usr2.id = msg.whom_id');
@@ -259,10 +260,14 @@ class MyMessages extends Component {
         }
 
 
+        //if not set type
+        //send all message where no delete
         if($type) {
             $query->andWhere(['=', 'msg.status', $type]);
-        }else {
-            $query->andWhere(['!=', 'msg.is_delete_whom', 1]);
+        } else {
+            $query->andWhere('((msg.is_delete_from != 1 AND from_id = :my_id) OR (msg.is_delete_whom != 1 AND whom_id = :my_id) ) ', [
+                ':my_id' => $my_id,
+            ]);
         }
 
         if($last_id){
@@ -272,8 +277,7 @@ class MyMessages extends Component {
         $return = $query->orderBy('msg.id')->all();
         $ids = Array();
         foreach($return as $m) {
-            //$return[$m['from_name']][] = $m;
-            if($m['whom_id'] == \Yii::$app->user->getId()) {
+            if($m['whom_id'] == $my_id) {
                 $ids[] = $m['id'];
             }
         }
@@ -285,20 +289,6 @@ class MyMessages extends Component {
 
         $user_id = \Yii::$app->user->getId();
         return array_map(function ($r) use ($user_id) { $r['i_am_sender'] = $r['from_id'] == $user_id; return $r;}, $return);
-    }
-
-
-    public static function unixToDate ($arr){
-        if(!is_array($arr) && !is_object($arr)) {
-            return $arr;
-        }
-        if(isset($arr['created_at'])) {
-            $arr['created_at'] = \Yii::$app->formatter->asDatetime( $arr['created_at'], 'php:d-m-Y H:i');
-        }
-        if(isset($arr['updated_at'])) {
-            $arr['updated_at'] = \Yii::$app->formatter->asDatetime( $arr['updated_at'], 'php:d-m-Y H:i');
-        }
-        return $arr;
     }
 
 }
