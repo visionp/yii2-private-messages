@@ -1,8 +1,8 @@
 {
     "name": "vision/yii2-private-messages",
-    "description": "Private messages.Llong polling.",
+    "description": "Private messages. Ajax polling.",
     "type": "yii2-extension",
-    "keywords": ["yii2","extension","private","messages"],
+    "keywords": ["yii2","extension","private messages","messages"],
     "license": "MIT",
     "authors": [
         {
