@@ -58,7 +58,7 @@ class PrivateMessageKushalpandyaWidget extends PrivateMessageWidget {
         $html .= '<textarea disabled="true" name="input_message"></textarea>';
         $html .= '<input type="hidden" name="message_id_user" value="">';
         $html .= '<button type="submit">' . $this->buttonName . '</button>';
-        $html .= '<span class="send_mail"><input class="checkbox" id="send_mail" type="checkbox" name="send_mail" value="1"><label for="send_mail">Отправить также на email</label></span>';
+        $html .= \Yii::$app->mymessages->enableEmail ? '<span class="send_mail"><input class="checkbox" id="send_mail" type="checkbox" name="send_mail" value="1"><label for="send_mail">Отправить также на email</label></span>' : '';
         $html .= '</form></div>';
         return $html;
     }
