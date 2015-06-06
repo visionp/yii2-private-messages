@@ -18,6 +18,6 @@ class MessageAssets extends \yii\web\AssetBundle {
         //'css/vision_messages.css',
     ];
     public $depends = [
-        'yii\web\JqueryAsset'
+        'vision\messages\assets\PrivateMessPoolingAsset'
     ];
 } 

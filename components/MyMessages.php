@@ -27,6 +27,18 @@ class MyMessages extends Component {
     /** @var string */
     public $attributeNameUser = 'username';
 
+    /** @var boolean */
+    public $enableEmail = false;
+
+    /** @var function */
+    public $getEmail = null;
+
+    /** @var array */
+    public $templateEmail = [];
+
+    /** @var string */
+    public $subject = 'Private message';
+
     /** @var string */
     protected $userTableName;
 
@@ -39,12 +51,12 @@ class MyMessages extends Component {
     }
 
 
-    public function sendMessage($whom_id, $message) {
+    public function sendMessage($whom_id, $message, $sendEmail = false) {
         $result = null;
         if(is_array($whom_id)) {
-            $result = $this->_sendMessages($whom_id, $message);
+            $result = $this->_sendMessages($whom_id, $message, $sendEmail);
         } else {
-            $result = $this->_sendMessage($whom_id, $message);
+            $result = $this->_sendMessage($whom_id, $message, $sendEmail);
         }
         return $result;
     }
@@ -60,9 +72,9 @@ class MyMessages extends Component {
     }
 
 
-    public function checkMessage($last_id){
-        $whom_id = \Yii::$app->user->getId();
-        return $this->getMessages($whom_id, false, 1, $last_id);
+    public function checkMessage(){
+        $result = $this->getAllUsers();
+        return array_filter($result, function($arr) { return $arr['cnt_mess'] > 0 ;});
     }
 
     /**
@@ -92,14 +104,54 @@ class MyMessages extends Component {
      *
      * @return array
      */
-    protected function _sendMessage($whom_id, $message) {
+    protected function _sendMessage($whom_id, $message, $send_email = false) {
         $model = new Messages();
         $model->from_id = \Yii::$app->user->id;
         $model->whom_id = $whom_id;
         $model->message = $message;
+        if($this->enableEmail && $send_email) {
+            $this->_sendEmail($whom_id, $message);
+        }
 
         return $this->saveData($model, self::EVENT_SEND);
     }
+
+    /**
+     * Method to _sendEmail.
+     *
+     * @param $whom_id
+     * @param $message
+     *
+     * @throws EceptionMessages
+     *
+     * @return boolean, array
+     */
+    protected function _sendEmail($whom_id, $message) {
+        if(!is_callable($this->getEmail)) {
+            throw new EceptionMessages('Email not send. Set in config "getEmail" to callable func.');
+        }
+        if(!isset($this->templateEmail['html'], $this->templateEmail['text'])) {
+            throw new EceptionMessages('Email not send. Set in config "templateEmail".');
+        }
+        $user = $this->getUser($whom_id);
+        if($user) {
+            $email = call_user_func($this->getEmail, $user);
+        }
+        if(!empty($email)) {
+            return \Yii::$app->mailer
+                ->compose(['html' => $this->templateEmail['html'], 'text' => $this->templateEmail['text']], ['message' => $message])
+                ->setFrom([\Yii::$app->params['supportEmail'] => \Yii::$app->name . ' private Message'])
+                ->setTo($email)
+                ->setSubject($this->subject)
+                ->send();
+        }
+        return false;
+    }
+
+    /*
+    public $getEmail = null;
+    public $templateEmail = [];
+     */
 
 
     /**
@@ -110,10 +162,10 @@ class MyMessages extends Component {
      *
      * @return array
      */
-    protected function _sendMessages(Array $whom_ids, $message) {
+    protected function _sendMessages(Array $whom_ids, $message, $sendEmail = false) {
         $result = Array();
         foreach($whom_ids as $id) {
-            $result[] = $this->sendMessage($id, $message);
+            $result[] = $this->sendMessage($id, $message, $sendEmail);
         }
         return $result;
     }
@@ -181,10 +233,22 @@ class MyMessages extends Component {
 
 
     /**
-     * Method to deleteMessage.
+     * Method to getUser.
      *
      * @throws EceptionMessages
-     * @return Messages
+     * @return array
+     */
+    public function getUser($id) {
+        $model = new $this->modelUser();
+        $user = $model::findOne($id);
+        return $user;
+    }
+
+    /**
+     * Method to getAllUsers.
+     *
+     * @throws EceptionMessages
+     * @return array
      */
     public function getAllUsers() {
         $table_name = Messages::tableName();

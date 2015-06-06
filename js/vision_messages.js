@@ -1,16 +1,17 @@
-function getUrl() {
-    pathArray = location.href.split( '/' );
-    protocol = pathArray[0];
-    host = pathArray[2];
-    var url = protocol + '//' + host + '/admin/battle/private-messages';
-    return url;
-};
-
-
 //Работа с окном сообщением
-var messages = (function() {
+var visiPrivateMessages = (function() {
     "use strict";
     var di = {};
+
+    var enableLog = false;
+
+    function getUrl() {
+        var pathArray = location.href.split( '/' );
+        var protocol = pathArray[0];
+        var host = pathArray[2];
+        var url = protocol + '//' + host + '/admin/battle/private-messages';
+        return url;
+    };
 
     return function(id_block_) {
         var id_block = typeof id_block_ != "undefined" ? id_block_ : '#message-container';
@@ -27,6 +28,7 @@ var messages = (function() {
             self.form = self.mainBox.find('form.message-form').eq(0);
             self.inputText   = self.form.find('[name="input_message"]');
             self.inputFromId = self.form.find('[name="message_id_user"]');
+            self.inputIsEmail = self.form.find('[name="send_mail"]');
             self.lastId = 1;
         };
 
@@ -52,15 +54,16 @@ var messages = (function() {
             });
         };
 
+        //отправка сообщения
         var sendMessage = function(whom_id, text) {
             $.ajax({
                 type: "GET",
                 url: self.base_url,
-                data: {whom_id:whom_id, text:text, action:'sendMessage'},
+                data: {whom_id:whom_id, text:text, isEmail:self.isEmail, action:'sendMessage'},
                 success: function(msg){
                     if(msg.status) {
-                        self.inputText.val('');
                         self.updateBox(msg.data);
+                        self.inputText.val('');
                     } else {
                         self.log('error: ' + 'sendMessage');
                         self.log(msg);
@@ -80,27 +83,39 @@ var messages = (function() {
 
         this.reInit = function() {
             init();
+            return self;
         };
 
         this.log = function(m) {
-            console.log(m);
+            if(enableLog){
+                console.log(m);
+            }
+            return self;
         };
 
         this.getAllMessages = function () {
             updateMessage('getMessage');
+            return self;
         };
 
         this.getNewMessages = function () {
             updateMessage('getNewMessage');
+            return self;
         };
 
+        //проверить на дублирование сообщение на почту
+        this.isEmail = function() {
+            return self.inputIsEmail.prop('checked');
+        };
 
+        //очистить окно сообщений
         this.clearBox = function() {
             self.box.html('');
             self.lastId = 1;
+            return self;
         };
 
-
+        //создать разметку ноовго сообщения
         this.createHtmlMessage = function(n) {
             var html = '';
             html += '<div data-id="' + n['id']  +'" class="message ' + (n['i_am_sender'] ? 'bubble-right' : 'bubble-left') + '">';
@@ -112,11 +127,26 @@ var messages = (function() {
             return html;
         };
 
+        //обработка событий обновления данных pool
         this.fromPooling = function(m) {
-            self.log(m);
+            var current_id = self.inputFromId.val();
+            for(var k in m){
+                var arr = m[k];
+                self.setCountMessToList(arr['id'], arr['cnt_mess']);
+                if(arr['id'] == current_id) {
+                    self.getNewMessages();
+                }
+            }
+            return self;
         };
 
-        self.deleteMessage = function(idMessage) {
+        //Установить кол-во новых сообщений в списке пользователей
+        this.setCountMessToList = function(user_id, count) {
+            self.mainBox.find('li.contact[data-user=' + user_id + '] #cnt').eq(0).html(count);
+            return self;
+        };
+
+        this.deleteMessage = function(idMessage) {
             $.ajax({
                 type: "GET",
                 url: self.base_url,
@@ -130,10 +160,18 @@ var messages = (function() {
                     }
                 }
             });
+            return self;
         };
 
-        this.updateBox = function(m) {
+        //обновление блока сообщений
+        this.updateBox = function(data) {
+            var m = data.messages;
+            var fromId = data.from_id;
             var html = '';
+            if(fromId != self.inputFromId.val()){
+                self.log('Error id user message and fromId');
+                return false;
+            }
             m.forEach(function(h){
                 if(1*h['id'] > self.lastId) {
                     html += self.createHtmlMessage(h);
@@ -145,8 +183,11 @@ var messages = (function() {
             });
             self.box.append(html);
             self.box.animate({scrollTop: self.box.prop("scrollHeight")}, 500);
+            self.setCountMessToList(fromId, ' ');
+            return self;
         };
 
+        //отправка сообщения
         this.form.submit(function() {
             var text = self.inputText.val();
             var id = self.inputFromId.val();
@@ -158,6 +199,7 @@ var messages = (function() {
         });
 
 
+        //обработка кликов для удаления сообщений
         self.mainBox.click(function(event) {
             var target = $(event.target);
             if(target.is('span.delete-message')) {
@@ -167,6 +209,7 @@ var messages = (function() {
             }
         });
 
+        //обработка кликов на контакты
         this.mainBox.find('.contact').click(function(event){
             var user_id = $(this).data('user');
             if(user_id) {
@@ -179,106 +222,10 @@ var messages = (function() {
 
         di[id_block] = this;
 
-        /*
-        this.pools = new pooling(self.lastId);
+
+        this.pools = new privateMessPooling(self.lastId);
         this.pools.addListener('newData', this.fromPooling);
         this.pools.start();
-        */
+
     }
-})();
-
-
-
-//Пуллинг, данные отдаются через события
-var pooling = (function() {
-    "use strict";
-    var lastId = 0;
-    var di = false;
-
-    return function(max_id) {
-        var self = this;
-        var activeTimeout = false;
-
-        if(max_id > lastId) {
-            lastId = max_id;
-        }
-
-        if(di != false) {
-            return di;
-        }
-
-        var pooling = function (){
-            self.ajax = $.ajax({
-                url:getUrl(),
-                type:"GET",
-                data:{last_id:lastId, action:'pooling'},
-                //cahce:false,
-                //timeout:10000,
-                //async:true,
-                success:function(result){
-                    if(result) {
-                        self.triggerEvent('newData', result);
-                    }
-                },
-                complete:function() {
-                    if(activeTimeout) {
-                        setTimeout(pooling(lastId), 40000);
-                    }
-                }
-            });
-        };
-
-        this.start = function() {
-            if(!activeTimeout) {
-                self.log(15);
-                pooling();
-                activeTimeout = true;
-            }
-        };
-
-        this.stop = function() {
-            if(activeTimeout) {
-                if(self.ajax) {
-                    self.ajax.abort();
-                }
-                activeTimeout = false;
-            }
-        };
-
-        this.log = function(data) {
-            console.log(data);
-        };
-
-        di = this;
-        this.listeners = {};
-
-        this.addListener = function(evt, callback) {
-
-            if ( !this.listeners.hasOwnProperty(evt) ) {
-                this.listeners[evt] = [];
-            }
-
-            this.listeners[evt].push(callback);
-        };
-
-        this.removeListener = function(evt, callback) {
-            if ( this.listeners.hasOwnProperty(evt) )    {
-                var i,length;
-                for (i = 0, length = this.listeners[evt].length; i < length; i += 1) {
-                    if ( this.listeners[evt][i] === callback) {
-                        this.listeners[evt].splice(i, 1);
-                    }
-                }
-            }
-        };
-
-        this.triggerEvent = function(evt, args) {
-            if ( this.listeners.hasOwnProperty(evt) )    {
-                var i,length;
-                for (i = 0, length = this.listeners[evt].length; i < length; i += 1) {
-                    this.listeners[evt][i](args);
-                }
-            }
-        };
-    };
 })();

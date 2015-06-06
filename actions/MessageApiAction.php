@@ -40,33 +40,33 @@ class MessageApiAction extends Action {
 
     protected function getMessage() {
         $from_id = \Yii::$app->request->get('from_id', false);
-        return \Yii::$app->mymessages->getAllMessages(\Yii::$app->user->identity->id, $from_id);
+        $data['messages'] = \Yii::$app->mymessages->getAllMessages(\Yii::$app->user->identity->id, $from_id);
+        $data['from_id'] = $from_id;
+        return $data;
     }
 
 
     protected function getNewMessage() {
         $from_id = \Yii::$app->request->get('from_id', false);
-        return \Yii::$app->mymessages->getNewMessages(\Yii::$app->user->identity->id, $from_id);
-    }
-
-
-    protected function updateMessage() {
-        $id_last_message = \Yii::$app->request->post('id_last_message');
-        while(true){
-            sleep(5);
-        }
+        $data['messages'] = \Yii::$app->mymessages->getNewMessages(\Yii::$app->user->identity->id, $from_id);
+        $data['from_id'] = $from_id;
+        return $data;
     }
 
 
     protected function sendMessage() {
         $whom_id = \Yii::$app->request->get('whom_id', false);
+        $isEmail = \Yii::$app->request->get('isEmail', false);
         $message = \Yii::$app->request->get('text', false);
+
         if(!$whom_id && !$message) {
             $this->sendJson(['status' => false, 'message' => 'No data.']);
         }
 
-        \Yii::$app->mymessages->sendMessage($whom_id, $message);
-        return \Yii::$app->mymessages->getNewMessages(\Yii::$app->user->identity->id, $whom_id);
+        \Yii::$app->mymessages->sendMessage($whom_id, $message, $isEmail == 'true');
+        $data['messages'] = \Yii::$app->mymessages->getNewMessages(\Yii::$app->user->identity->id, $whom_id);
+        $data['from_id'] = $whom_id;
+        return $data;
     }
 
 
@@ -79,8 +79,11 @@ class MessageApiAction extends Action {
 
     protected function pooling() {
         $last_id = \Yii::$app->request->get('last_id', false);
+        $data    = \Yii::$app->mymessages->checkMessage($last_id);
+        $this->sendJson($data);
+        /*
         if(!$last_id) {
-            sleep(7);
+            sleep(2);
             $this->sendJson(['status' => false, 'message' => 'No last id, info:' . print_r($last_id, 1)]);
         }
         $time_cancel = (int) ini_get('max_execution_time') - 1;
@@ -91,22 +94,19 @@ class MessageApiAction extends Action {
             if($i > 4) {
                 $this->sendJson('dddd');
             }
-            /*
             $data = \Yii::$app->mymessages->checkMessage($last_id);
             if (count($data) > 0) {
                 $this->sendJson($data);
             }
-            */
             sleep(7);
         }
+        */
     }
 
 
     protected function sendJson($data) {
-        $response = Yii::$app->response;
-        $response->format = \yii\web\Response::FORMAT_JSON;
-        $response->data = $data;
-        $response->send();
+        header('Content-Type: application/json');
+        echo json_encode($data);
         flush();
         die();
     }

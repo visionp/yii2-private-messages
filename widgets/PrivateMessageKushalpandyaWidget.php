@@ -34,10 +34,11 @@ class PrivateMessageKushalpandyaWidget extends PrivateMessageWidget {
             $html .= '<li class="contact" data-user="' . $usr['id'] . '"><a href="#">';
             //$html .= '<span class="user-img"></span>';
             $html .= '<span class="user-title">' . $usr[\Yii::$app->mymessages->attributeNameUser];
+            $html .= ' <span id="cnt">';
             if($usr['cnt_mess']){
-                $html .= " (" .$usr['cnt_mess'] . ")";
+                $html .=  $usr['cnt_mess'];
             }
-            $html .= "</span></a></li>";
+            $html .= "</span></span></a></li>";
         }
         $html .= '</ul>';
         return $html;
@@ -57,6 +58,7 @@ class PrivateMessageKushalpandyaWidget extends PrivateMessageWidget {
         $html .= '<textarea disabled="true" name="input_message"></textarea>';
         $html .= '<input type="hidden" name="message_id_user" value="">';
         $html .= '<button type="submit">' . $this->buttonName . '</button>';
+        $html .= '<span class="send_mail"><input class="checkbox" id="send_mail" type="checkbox" name="send_mail" value="1"><label for="send_mail">Отправить также на email</label></span>';
         $html .= '</form></div>';
         return $html;
     }
@@ -64,7 +66,7 @@ class PrivateMessageKushalpandyaWidget extends PrivateMessageWidget {
 
     protected function addJs() {
         $var_name = 'mess_' . $this->uniq_id;
-        $script = 'var ' . $var_name . ' = new messages("#'. $this->uniq_id .'");';
+        $script = 'var ' . $var_name . ' = new visiPrivateMessages("#'. $this->uniq_id .'");';
         $script .= "$var_name.getAllMessages();";
         $view = $this->getView();
         $view->registerJs($script, $view::POS_READY);
