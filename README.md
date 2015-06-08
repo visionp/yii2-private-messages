@@ -1,6 +1,6 @@
 Private messages
 ================
-Private messages.Polling ajax.
+Private messages.Poolling ajax.
 
 Плагин для приватных сообщений.
 Не требует дополнтьельных плагинов.
