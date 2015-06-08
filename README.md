@@ -34,6 +34,20 @@ php composer.phar require --prefer-dist vision/yii2-private-messages "*"
 
 yii migrate --migrationPath=@vendor/vision/yii2-private-messages/migrations/
 
+
+В контроллере через который будут передаваться данные добавляем action
+ 
+ ```
+     public function actions()
+     {
+         return [
+             'private-messages' => array(
+                 'class' => \vision\messages\actions\MessageApiAction::className()
+             )
+         ];
+     }
+  ```
+
 Далее прописываем в конфиге:
 
 ```
@@ -45,6 +59,8 @@ yii migrate --migrationPath=@vendor/vision/yii2-private-messages/migrations/
                 //класс модели пользователей
                 //по-умолчанию \Yii::$app->user->identityClass
             'modelUser' => 'common\models\User',
+                //имя контроллера где разместили action
+            'nameController' => 'site',
                 //не обязательно
                 //имя поля в таблице пользователей которое будет использоваться в качестве имени
                 //по-умолчанию username
@@ -67,7 +83,7 @@ yii migrate --migrationPath=@vendor/vision/yii2-private-messages/migrations/
         ],
     ...]
 ```
-
+     
 Для работы достаточно во вьюхе вывести виджет
 
 ```

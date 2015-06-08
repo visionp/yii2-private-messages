@@ -27,6 +27,9 @@ class MyMessages extends Component {
     /** @var string */
     public $attributeNameUser = 'username';
 
+    /** @var string */
+    public $nameController;
+
     /** @var boolean */
     public $enableEmail = false;
 
