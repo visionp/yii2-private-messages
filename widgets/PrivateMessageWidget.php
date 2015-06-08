@@ -70,11 +70,12 @@ class PrivateMessageWidget extends Widget {
 
 
     protected function addJs() {
-        $var_name = 'mess_' . $this->uniq_id;
-        $script = 'var baseUrlPrivateMessage = ' . \Yii::$app->mymessages->nameController . ';';
-        $script .= 'var ' . $var_name . ' = new messages("#'. $this->uniq_id .'");';
-        $script .= "$var_name.getAllMessages();";
         $view = $this->getView();
+        $var_name = 'mess_' . $this->uniq_id;
+        $base = "var baseUrlPrivateMessage ='" . \Yii::$app->mymessages->nameController . "';";
+        $view->registerJs($base, $view::POS_BEGIN);
+        $script = 'var ' . $var_name . ' = new visiPrivateMessages("#'. $this->uniq_id .'");';
+        $script .= "$var_name.getAllMessages();";
         $view->registerJs($script, $view::POS_READY);
     }
 
