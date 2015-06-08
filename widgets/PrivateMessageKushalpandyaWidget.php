@@ -66,7 +66,7 @@ class PrivateMessageKushalpandyaWidget extends PrivateMessageWidget {
 
     protected function addJs() {
         $var_name = 'mess_' . $this->uniq_id;
-        $script = 'var baseUrlPrivateMessage = ' . \Yii::$app->mymessages->nameController . ';';
+        $script = "var baseUrlPrivateMessage ='" . \Yii::$app->mymessages->nameController . "';";
         $script .= 'var ' . $var_name . ' = new visiPrivateMessages("#'. $this->uniq_id .'");';
         $script .= "$var_name.getAllMessages();";
         $view = $this->getView();
