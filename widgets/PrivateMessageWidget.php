@@ -1,9 +1,9 @@
 <?php
 
-namespace visionp\messages\widgets;
+namespace vision\messages\widgets;
 
 
-use visionp\messages\assets\MessageAssets;
+use vision\messages\assets\MessageAssets;
 use \yii\base\Widget;
 
 
