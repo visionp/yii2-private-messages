@@ -18,13 +18,13 @@ Private messages
 Выполните
 
 ```
-php composer.phar require --prefer-dist vision/yii2-private-messages "*"
+php composer.phar require --prefer-dist vision/yii2-private-messages "dev-master"
 ```
 
 или добавьте в ваш composer.json
 
 ```
-"vision/yii2-private-messages": "*"
+"vision/yii2-private-messages": "dev-master"
 ```
 
 Использование
