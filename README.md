@@ -1,8 +1,8 @@
 Private messages
 ================
-Private messages.Poolling ajax.
+Private messages
 
-Приватные сообщения.
+Приватные сообщения (не чат).
 
 Обновление сообщений при отправке или в фоне каждые 30 секунд (это можно изменить в "vendor\vision\yii2-private-messages\js\private_mess_pooling.js").
 Есть возможность отправлять копию сообщения на email пользователя.
