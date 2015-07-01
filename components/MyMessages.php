@@ -108,6 +108,10 @@ class MyMessages extends Component {
      * @return array
      */
     protected function _sendMessage($whom_id, $message, $send_email = false) {
+        if(!is_int($whom_id) && is_string($whom_id)){
+            $ids = $this->getUsersByRoles($whom_id);
+            return $this->sendMessage($ids, $message, $send_email);
+        }
         $model = new Messages();
         $model->from_id = \Yii::$app->user->id;
         $model->whom_id = $whom_id;
@@ -168,7 +172,7 @@ class MyMessages extends Component {
     protected function _sendMessages(Array $whom_ids, $message, $sendEmail = false) {
         $result = Array();
         foreach($whom_ids as $id) {
-            $result[] = $this->sendMessage($id, $message, $sendEmail);
+            $result[] = $this->_sendMessage($id, $message, $sendEmail);
         }
         return $result;
     }
@@ -357,5 +361,20 @@ class MyMessages extends Component {
         $user_id = \Yii::$app->user->getId();
         return array_map(function ($r) use ($user_id) { $r['i_am_sender'] = $r['from_id'] == $user_id; return $r;}, $return);
     }
+
+    protected function getUsersByRoles($role) {
+        $users = new \yii\db\Query();
+        $users
+            ->select([
+                'usr.id'
+            ])
+            ->from("$this->userTableName as usr")
+            ->leftJoin('auth_assignment as ath', 'usr.id = ath.user_id')
+            ->where(['ath.item_name' => $role])
+            ->asArray()
+            ->all();
+        return $users;
+    }
+
 
 }
