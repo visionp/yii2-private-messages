@@ -88,6 +88,7 @@ class MyMessages extends Component {
         if($message){
             $this->_toReadSystemMessage($id);
         }
+        return $message;
     }
 
     protected function _getSystemMess($user_id, $only_new = false) {
@@ -115,7 +116,7 @@ class MyMessages extends Component {
     }
 
     protected function _toReadSystemMessage($user_id) {
-        $count = Messages::updateAll(['whom_id' => $user_id, 'from_id' => null], ['status' => Messages::STATUS_READ]);
+        $count = Messages::updateAll(['status' => Messages::STATUS_READ], ['whom_id' => $user_id, 'from_id' => null]);
         return $count;
     }
 
