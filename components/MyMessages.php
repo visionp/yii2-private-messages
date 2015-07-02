@@ -78,6 +78,47 @@ class MyMessages extends Component {
         $this->isSystem = false;
     }
 
+    public function getSystemListNew() {
+        return $this->_getSystemMess(\Yii::$app->user->id, true);
+    }
+
+    public function getSystemMess() {
+        $id = \Yii::$app->user->id;
+        $message = $this->_getSystemMess($id);
+        if($message){
+            $this->_toReadSystemMessage($id);
+        }
+    }
+
+    protected function _getSystemMess($user_id, $only_new = false) {
+        $messages = new \yii\db\Query();
+        $messages
+            ->select([
+                'usr.id',
+                "usr.$this->attributeNameUser",
+                'usr.email',
+                'm.message',
+                'FROM_UNIXTIME(m.created_at, "%d-%m-%Y %H:%i") as created_at'
+            ])
+            ->from("$this->userTableName as usr")
+            ->leftJoin('messages as m', 'usr.id = m.whom_id')
+            ->where([
+                'm.from_id' => null,
+                'usr.id'=> $user_id
+            ]);
+
+        if($only_new) {
+            $messages->andWhere(['m.status' => 1]);
+        }
+
+        return $messages->all();
+    }
+
+    protected function _toReadSystemMessage($user_id) {
+        $count = Messages::updateAll(['whom_id' => $user_id, 'from_id' => null], ['status' => Messages::STATUS_READ]);
+        return $count;
+    }
+
     /**
      * Method to getMyMessages.
      *
