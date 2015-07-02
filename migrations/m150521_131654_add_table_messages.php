@@ -14,7 +14,7 @@ class m150521_131654_add_table_messages extends Migration
 
         $this->createTable('{{%messages}}', [
             'id'         => Schema::TYPE_PK . ' NOT NULL',
-            'from_id'    => Schema::TYPE_INTEGER . ' NOT NULL',
+            'from_id'    => Schema::TYPE_INTEGER . ' NULL',
             'whom_id'    => Schema::TYPE_INTEGER . ' NOT NULL',
             'message'    => Schema::TYPE_STRING  . '(750) NOT NULL',
             'status'     => Schema::TYPE_INTEGER . ' DEFAULT 0',

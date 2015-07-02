@@ -49,7 +49,7 @@ class Messages extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['from_id', 'whom_id', 'message'], 'required'],
+            [['whom_id', 'message'], 'required'],
             [['from_id', 'whom_id', 'status', 'created_at', 'updated_at'], 'integer'],
             [['message'], 'string', 'max' => 750],
             [['status'], 'default', 'value' => self::STATUS_NEW],

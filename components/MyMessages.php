@@ -33,6 +33,9 @@ class MyMessages extends Component {
     /** @var boolean */
     public $enableEmail = false;
 
+    /** @var boolean */
+    public $isSystem = false;
+
     /** @var function */
     public $getEmail = null;
 
@@ -56,12 +59,23 @@ class MyMessages extends Component {
 
     public function sendMessage($whom_id, $message, $sendEmail = false) {
         $result = null;
+        if(!is_numeric($whom_id) && is_string($whom_id)){
+            $ids = $this->getUsersByRoles($whom_id);
+            return $this->sendMessage($ids, $message, $send_email);
+        }
         if(is_array($whom_id)) {
             $result = $this->_sendMessages($whom_id, $message, $sendEmail);
         } else {
             $result = $this->_sendMessage($whom_id, $message, $sendEmail);
         }
         return $result;
+    }
+
+
+    public function systemSend ($whom_id, $message, $sendEmail = false) {
+        $this->isSystem = true;
+        $this->sendMessage($whom_id, $message, $sendEmail);
+        $this->isSystem = false;
     }
 
     /**
@@ -71,7 +85,8 @@ class MyMessages extends Component {
      * @return array
      */
     public function getMyMessages() {
-        return $this->getMessages(\Yii::$app->user->id);
+        $id = $this->getIdCurrentUser();
+        return $this->getMessages($id);
     }
 
 
@@ -108,12 +123,8 @@ class MyMessages extends Component {
      * @return array
      */
     protected function _sendMessage($whom_id, $message, $send_email = false) {
-        if(!is_int($whom_id) && is_string($whom_id)){
-            $ids = $this->getUsersByRoles($whom_id);
-            return $this->sendMessage($ids, $message, $send_email);
-        }
         $model = new Messages();
-        $model->from_id = \Yii::$app->user->id;
+        $model->from_id = $this->getIdCurrentUser();
         $model->whom_id = $whom_id;
         $model->message = $message;
         if($this->enableEmail && $send_email) {
@@ -204,7 +215,7 @@ class MyMessages extends Component {
     protected function changeStatusMessage($id, $status, $is_delete = false) {
         $model = Messages::findOne($id);
         $status_name = 'status';
-        $current_user_id = \Yii::$app->user->identity->id;
+        $current_user_id = $this->getIdCurrentUser();
         if(!$model) {
             throw new EceptionMessages('Message not found.');
         }
@@ -268,7 +279,7 @@ class MyMessages extends Component {
 
         $connection = \Yii::$app->db;
         $model = $connection->createCommand($sql);
-        $model->bindValue(':user_id', \Yii::$app->user->identity->id);
+        $model->bindValue(':user_id', $this->getIdCurrentUser());
 
         $users = $model->queryAll();
 
@@ -287,7 +298,7 @@ class MyMessages extends Component {
      */
     protected function saveData($model, $name_event = null) {
         if(!$model->save()) {
-            $mess = $model->hasErrors() ? implode(', ', $model->getErrors()) : 'Not saved. ' . $name_event;
+            $mess = $model->hasErrors() ? implode(', ', $model->getFirstErrors()) : 'Not saved. ' . $name_event;
             throw new EceptionMessages($mess);
         } else {
             if($name_event) {
@@ -312,7 +323,7 @@ class MyMessages extends Component {
      */
     protected function getMessages($whom_id, $from_id = null, $type = null, $last_id = null) {
         $table_name = Messages::tableName();
-        $my_id = \Yii::$app->user->getId();
+        $my_id = $this->getIdCurrentUser();
 
         $query = new \yii\db\Query();
         $query
@@ -358,22 +369,26 @@ class MyMessages extends Component {
             Messages::updateAll(['status' => Messages::STATUS_READ], ['in', 'id', $ids]);
         }
 
-        $user_id = \Yii::$app->user->getId();
+        $user_id = $this->getIdCurrentUser();
         return array_map(function ($r) use ($user_id) { $r['i_am_sender'] = $r['from_id'] == $user_id; return $r;}, $return);
     }
 
     protected function getUsersByRoles($role) {
         $users = new \yii\db\Query();
-        $users
+        $result = $users
             ->select([
                 'usr.id'
             ])
             ->from("$this->userTableName as usr")
             ->leftJoin('auth_assignment as ath', 'usr.id = ath.user_id')
             ->where(['ath.item_name' => $role])
-            ->asArray()
             ->all();
-        return $users;
+
+        return array_map(function($r) {return $r['id'];}, $result);
+    }
+
+    protected function getIdCurrentUser() {
+        return \Yii::$app->user->isGuest || $this->isSystem ? null : \Yii::$app->user->id;
     }
 
 
