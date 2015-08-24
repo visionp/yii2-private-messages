@@ -313,7 +313,7 @@ class MyMessages extends Component {
     public function getAllUsers() {
         $table_name = Messages::tableName();
 
-        $sql = "select usr.id, usr.$this->attributeNameUser as username, msg.cnt as cnt_mess ";
+        $sql = "select usr.id, usr.$this->attributeNameUser as $this->attributeNameUser, msg.cnt as cnt_mess ";
         $sql .= "from $this->userTableName as usr ";
         $sql .= "left join ";
         $sql .= "(select from_id, count(id) as cnt from $table_name where status = 1 and whom_id = :user_id GROUP by from_id) as msg ON usr.id = msg.from_id ";
