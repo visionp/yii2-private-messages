@@ -163,7 +163,7 @@ class MyMessages extends Component {
     public function createLogo($user_id) {
         $img = '<img src="">';
         if(is_callable($this->getLogo)){
-            $path_image = call_user_func($this->getLog, $user_id);
+            $path_image = call_user_func($this->getLogo, $user_id);
 
             if($path_image && is_file($path_image)) {
                 $img = Html::img($img);
