@@ -5,6 +5,7 @@ namespace vision\messages\widgets;
 
 use vision\messages\assets\MessageAssets;
 use \yii\base\Widget;
+use yii\helpers\Html;
 
 
 class PrivateMessageWidget extends Widget {

@@ -9,6 +9,7 @@
 namespace vision\messages\widgets;
 
 use vision\messages\assets\CloadAsset;
+use yii\helpers\Html;
 
 
 class CloadMessage extends PrivateMessageWidget {
@@ -35,9 +36,12 @@ class CloadMessage extends PrivateMessageWidget {
             $html .= '<div class="contact friends" data-name="' . $username . '" data-user="' . $usr['id'] . '">';
 
             $html .= '<button class="delete-friend">&times;</button>';
-            $html .= '<div class="friends-block"><img src="/img/thirg-place-ava.png"></div>';
-            $html .= '<div class="friends-name">';
+            $html .= '<div class="friends-block">';
 
+            $html .=  \Yii::$app->mymessages->createLogo($usr['id']);
+
+            $html .= '</div>';
+            $html .= '<div class="friends-name">';
 
             $html .= array_reduce($names, function($pre, $val) {
                 return $pre . "<div>$val</div>";

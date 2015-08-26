@@ -10,6 +10,7 @@ namespace vision\messages\components;
 
 use Yii;
 use yii\base\Component;
+use yii\helpers\Html;
 use vision\messages\models\Messages;
 use vision\messages\exceptions\EceptionMessages;
 use vision\messages\events\MessageEvent;
@@ -38,6 +39,9 @@ class MyMessages extends Component {
 
     /** @var function */
     public $getEmail = null;
+
+    /** @var function */
+    public $getLogo = null;
 
     /** @var array */
     public $templateEmail = [];
@@ -153,6 +157,18 @@ class MyMessages extends Component {
 
     public function getNewMessages($whom_id, $from_id) {
         return $this->getMessages($whom_id, $from_id, 1);
+    }
+
+
+    public function createLogo($user_id) {
+        $img = '<img src="">';
+        if(is_callable($this->getLogo)){
+            $path_image = $this->getLogo($user_id);
+            if($path_image && is_file($path_image)) {
+                $img = Html::img($img);
+            }
+        }
+        return $img;
     }
 
 
