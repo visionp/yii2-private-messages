@@ -3,7 +3,7 @@ var visiPrivateMessages = (function() {
     "use strict";
     var di = {};
 
-    var enableLog = true;
+    var enableLog = false;
 
     function getUrl() {
         var pathArray = location.href.split( '/' );
