@@ -165,8 +165,8 @@ class MyMessages extends Component {
         if(is_callable($this->getLogo)){
             $path_image = call_user_func($this->getLogo, $user_id);
 
-            if($path_image && is_file($path_image)) {
-                $img = Html::img($img);
+            if($path_image) {
+                $img = Html::img($path_image);
             }
         }
         return $img;
