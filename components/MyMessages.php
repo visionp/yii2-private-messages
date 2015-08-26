@@ -321,6 +321,7 @@ class MyMessages extends Component {
         return $user;
     }
 
+
     /**
      * Method to getAllUsers.
      *
@@ -432,6 +433,7 @@ class MyMessages extends Component {
         return array_map(function ($r) use ($user_id) { $r['i_am_sender'] = $r['from_id'] == $user_id; return $r;}, $return);
     }
 
+
     protected function getUsersByRoles($role) {
         $users = new \yii\db\Query();
         $result = $users
@@ -445,6 +447,7 @@ class MyMessages extends Component {
 
         return array_map(function($r) {return $r['id'];}, $result);
     }
+
 
     protected function getIdCurrentUser() {
         return \Yii::$app->user->isGuest || $this->isSystem ? null : \Yii::$app->user->id;
