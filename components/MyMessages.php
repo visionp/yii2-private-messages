@@ -162,7 +162,7 @@ class MyMessages extends Component {
 
     public function createLogo($user_id) {
         $img = '<img src="">';
-        if(is_callable($this->getLog)){
+        if(is_callable($this->getLogo)){
             $path_image = call_user_func($this->getLogo, $user_id);
 
             if($path_image) {
