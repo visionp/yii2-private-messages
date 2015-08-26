@@ -166,7 +166,7 @@ class MyMessages extends Component {
             $path_image = call_user_func($this->getLogo, $user_id);
 
             if($path_image) {
-                $img = Html::img($path_image);
+                $img = Html::img($path_image, ['width' => 40]);
             }
         }
         return $img;
