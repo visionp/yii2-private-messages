@@ -184,6 +184,8 @@ var visiPrivateMessages = (function() {
             });
             self.box.append(html);
             self.box.animate({scrollTop: self.box.prop("scrollHeight")}, 500);
+            self.tinyScrollBar();
+            $('#scrollbar1').tinyscrollbar();
             self.setCountMessToList(fromId, ' ');
             return self;
         };
@@ -222,6 +224,11 @@ var visiPrivateMessages = (function() {
         });
 
 
+        this.tinyScrollBar = function() {
+            $('#scrollbar1').tinyscrollbar();
+        };
+
+
         //Поиск по контактам
         $('div.search input[type="search"]').keyup(function(){
             var val = this.value;
@@ -244,7 +251,7 @@ var visiPrivateMessages = (function() {
         this.pools.addListener('newData', this.fromPooling);
         this.pools.start();
 
-        $('#scrollbarY').tinyscrollbar();
+        self.tinyScrollBar();
 
     }
 })();
