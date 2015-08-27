@@ -185,7 +185,6 @@ var visiPrivateMessages = (function() {
             self.box.append(html);
             self.box.animate({scrollTop: self.box.prop("scrollHeight")}, 500);
             self.tinyScrollBar();
-            $('#scrollbar1').tinyscrollbar();
             self.setCountMessToList(fromId, ' ');
             return self;
         };
@@ -224,6 +223,7 @@ var visiPrivateMessages = (function() {
         });
 
 
+        //resize tinyscrollbar
         this.tinyScrollBar = function() {
             $(window).trigger('resize');
         };
@@ -251,7 +251,7 @@ var visiPrivateMessages = (function() {
         this.pools.addListener('newData', this.fromPooling);
         this.pools.start();
 
-        self.tinyScrollBar();
+        $('#scrollbar1').tinyscrollbar();
 
     }
 })();
