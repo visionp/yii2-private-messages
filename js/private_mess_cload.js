@@ -225,7 +225,7 @@ var visiPrivateMessages = (function() {
 
 
         this.tinyScrollBar = function() {
-            $('#scrollbar1').tinyscrollbar();
+            $(window).trigger('resize');
         };
 
 
