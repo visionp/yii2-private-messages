@@ -15,9 +15,6 @@ class TinyscrollbarAsset extends AssetBundle
 {
     public $sourcePath = '@bower/TinyScrollbar';
 
-    public $css = [
-        'docs/css/tinyscrollbar.css'
-    ];
     public $js = [
         'lib/jquery.tinyscrollbar.js'
     ];

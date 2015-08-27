@@ -1,0 +1,771 @@
+/* Some lines are redudant. I just want to make sure its clear what is needed for a single instance. */
+
+/* scrollbar1 */
+#scrollbar1
+{
+    padding:0 25px 0 0;
+    margin:0 0 10px;
+    position:relative;
+}
+
+#scrollbar1 .viewport
+{
+    height:200px;
+    overflow:hidden;
+    position:relative;
+}
+
+#scrollbar1 .overview
+{
+    list-style:none;
+    position:absolute;
+    left:0;
+    top:0;
+    padding:0;
+    margin:0;
+}
+
+#scrollbar1 .scrollbar
+{
+    background:transparent url(../images/bg-scrollbar-track-y.png) no-repeat 0 0;
+    position:absolute;
+    top:0;
+    right:0;
+    width:15px;
+}
+
+#scrollbar1 .track
+{
+    background:transparent url(../images/bg-scrollbar-trackend-y.png) no-repeat 0 100%;
+    height:100%;
+    width:15px;
+    position:relative;
+}
+
+#scrollbar1 .thumb
+{
+    background:transparent url(../images/bg-scrollbar-thumb-y.png) no-repeat 50% 100%;
+    height:20px;
+    width:25px;
+    cursor:pointer;
+    overflow:hidden;
+    position:absolute;
+    top:0;
+    left:-5px;
+}
+
+#scrollbar1 .thumb .end
+{
+    background:transparent url(../images/bg-scrollbar-thumb-y.png) no-repeat 50% 0;
+    overflow:hidden;
+    height:5px;
+    width:25px;
+}
+
+#scrollbar1 .disable
+{
+    display:none;
+}
+
+.noSelect
+{
+    user-select:none;
+    -o-user-select:none;
+    -moz-user-select:none;
+    -khtml-user-select:none;
+    -webkit-user-select:none;
+}
+
+/* scrollbar2 */
+#scrollbar2
+{
+    width:251px;
+    margin:0 0 10px;
+}
+
+#scrollbar2 .viewport
+{
+    width:236px;
+    height:125px;
+    overflow:hidden;
+    position:relative;
+}
+
+#scrollbar2 .overview
+{
+    list-style:none;
+    width:1416px;
+    padding:0;
+    margin:0;
+    position:absolute;
+    left:0;
+    top:0;
+}
+
+#scrollbar2 .overview img
+{
+    float:left;
+}
+
+#scrollbar2 .scrollbar
+{
+    background:transparent url(../images/bg-scrollbar-track-x.png) no-repeat 0 0;
+    position:relative;
+    margin:0 0 5px;
+    clear:both;
+    height:15px;
+}
+
+#scrollbar2 .track
+{
+    background:transparent url(../images/bg-scrollbar-trackend-x.png) no-repeat 100% 0;
+    width:100%;
+    height:15px;
+    position:relative;
+}
+
+#scrollbar2 .thumb
+{
+    background:transparent url(../images/bg-scrollbar-thumb-x.png) no-repeat 100% 50%;
+    height:25px;
+    cursor:pointer;
+    overflow:hidden;
+    position:absolute;
+    left:0;
+    top:-5px;
+}
+
+#scrollbar2 .thumb .end
+{
+    background:transparent url(../images/bg-scrollbar-thumb-x.png) no-repeat 0 50%;
+    overflow:hidden;
+    height:25px;
+    width:5px;
+}
+
+#scrollbar2 .disable
+{
+    display:none;
+}
+
+.noSelect
+{
+    user-select:none;
+    -o-user-select:none;
+    -moz-user-select:none;
+    -khtml-user-select:none;
+    -webkit-user-select:none;
+}
+
+/* scrollbar3 */
+#scrollbar3
+{
+    padding:0 25px 0 0;
+    margin:0 0 10px;
+    position:relative;
+}
+
+#scrollbar3 .viewport
+{
+    height:300px;
+    overflow:hidden;
+    position:relative;
+}
+
+#scrollbar3 .overview
+{
+    list-style:none;
+    position:absolute;
+    left:0;
+    top:0;
+    padding:0;
+    margin:0;
+}
+
+#scrollbar3 .scrollbar
+{
+    background:transparent url(../images/bg-scrollbar-track-y.png) no-repeat 0 0;
+    position:absolute;
+    top:0;
+    right:0;
+    width:15px;
+}
+
+#scrollbar3 .track
+{
+    background:transparent url(../images/bg-scrollbar-trackend-y.png) no-repeat 0 100%;
+    height:100%;
+    width:15px;
+    position:relative;
+}
+
+#scrollbar3 .thumb
+{
+    background:transparent url(../images/bg-scrollbar-thumb-y.png) no-repeat 50% 100%;
+    height:20px;
+    width:25px;
+    cursor:pointer;
+    overflow:hidden;
+    position:absolute;
+    top:0;
+    left:-5px;
+}
+
+#scrollbar3 .thumb .end
+{
+    background:transparent url(../images/bg-scrollbar-thumb-y.png) no-repeat 50% 0;
+    overflow:hidden;
+    height:5px;
+    width:25px;
+}
+
+#scrollbar3 .disable
+{
+    display:none;
+}
+
+.noSelect
+{
+    user-select:none;
+    -o-user-select:none;
+    -moz-user-select:none;
+    -khtml-user-select:none;
+    -webkit-user-select:none;
+}
+
+#scrollbar4
+{
+    margin:0 0 10px;
+    padding:0 25px 0 0;
+    position:relative;
+}
+
+#scrollbar4 .viewport
+{
+    height:200px;
+    overflow:hidden;
+    position:relative;
+}
+
+#scrollbar4 .overview
+{
+    list-style:none;
+    position:absolute;
+    left:0;
+    top:0;
+}
+
+#scrollbar4 .scrollbar
+{
+    background:transparent url(../images/bg-scrollbar-track-y.png) no-repeat 0 0;
+    position:absolute;
+    top:0;
+    right:0;
+    width:15px;
+}
+
+#scrollbar4 .track
+{
+    background:transparent url(../images/bg-scrollbar-trackend-y.png) no-repeat 0 100%;
+    height:100%;
+    width:15px;
+    position:relative;
+}
+
+#scrollbar4 .thumb
+{
+    background:transparent url(../images/bg-scrollbar-thumb-y.png) no-repeat 50% 100%;
+    height:20px;
+    width:25px;
+    cursor:pointer;
+    overflow:hidden;
+    position:absolute;
+    top:0;
+    left:-5px;
+}
+
+#scrollbar4 .thumb .end
+{
+    background:transparent url(../images/bg-scrollbar-thumb-y.png) no-repeat 50% 0;
+    overflow:hidden;
+    height:5px;
+    width:25px;
+}
+
+#scrollbar4 .disable
+{
+    display:none;
+}
+
+.noSelect
+{
+    user-select:none;
+    -o-user-select:none;
+    -moz-user-select:none;
+    -khtml-user-select:none;
+    -webkit-user-select:none;
+}
+
+#scrollbar5
+{
+    margin:0 0 10px;
+    padding:0 25px 0 0;
+    position:relative;
+}
+
+#scrollbar5 .viewport
+{
+    height:200px;
+    overflow:hidden;
+    position:relative;
+}
+
+#scrollbar5 .overview
+{
+    list-style:none;
+    position:absolute;
+    left:0;
+    top:0;
+}
+
+#scrollbar5 .scrollbar
+{
+    background:transparent url(../images/bg-scrollbar-track-y.png) no-repeat 0 0;
+    position:absolute;
+    top:0;
+    right:0;
+    width:15px;
+}
+
+#scrollbar5 .track
+{
+    background:transparent url(../images/bg-scrollbar-trackend-y.png) no-repeat 0 100%;
+    height:100%;
+    width:15px;
+    position:relative;
+}
+
+#scrollbar5 .thumb
+{
+    background:transparent url(../images/bg-scrollbar-thumb-y.png) no-repeat 50% 100%;
+    height:20px;
+    width:25px;
+    cursor:pointer;
+    overflow:hidden;
+    position:absolute;
+    top:0;
+    left:-5px;
+}
+
+#scrollbar5 .thumb .end
+{
+    background:transparent url(../images/bg-scrollbar-thumb-y.png) no-repeat 50% 0;
+    overflow:hidden;
+    height:5px;
+    width:25px;
+}
+
+#scrollbar5 .disable
+{
+    display:none;
+}
+
+.scrollbar5text
+{
+    display:none;
+}
+
+.scrollbar5button
+{
+    display:block;
+    padding:10px 0;
+}
+
+.noSelect
+{
+    user-select:none;
+    -o-user-select:none;
+    -moz-user-select:none;
+    -khtml-user-select:none;
+    -webkit-user-select:none;
+}
+
+#scrollbar6
+{
+    padding:0 25px 0 0;
+    overflow:hidden;
+    margin:0 0 10px;
+    position:relative;
+}
+
+#scrollbar6 .viewport
+{
+    height:200px;
+    overflow:hidden;
+    position:relative;
+}
+
+#scrollbar6 .overview
+{
+    list-style:none;
+    position:absolute;
+    left:0;
+    top:0;
+}
+
+#scrollbar6 .scrollbar
+{
+    background:transparent url(../images/bg-scrollbar-track-y.png) no-repeat 0 0;
+    position:absolute;
+    top:0;
+    right:0;
+    width:15px;
+}
+
+#scrollbar6 .track
+{
+    background:transparent url(../images/bg-scrollbar-trackend-y.png) no-repeat 0 100%;
+    height:100%;
+    width:15px;
+    position:relative;
+}
+
+#scrollbar6 .thumb
+{
+    background:transparent url(../images/bg-scrollbar-thumb-y.png) no-repeat 50% 100%;
+    height:20px;
+    width:25px;
+    cursor:pointer;
+    overflow:hidden;
+    position:absolute;
+    top:0;
+    left:-5px;
+}
+
+#scrollbar6 .thumb .end
+{
+    background:transparent url(../images/bg-scrollbar-thumb-y.png) no-repeat 50% 0;
+    overflow:hidden;
+    height:5px;
+    width:25px;
+}
+
+#scrollbar6 .disable
+{
+    display:none;
+}
+
+.scrollbar6button
+{
+    display:block;
+    padding:10px 0;
+}
+
+.noSelect
+{
+    user-select:none;
+    -o-user-select:none;
+    -moz-user-select:none;
+    -khtml-user-select:none;
+    -webkit-user-select:none;
+}
+
+#scroll6load
+{
+    display:block;
+    float:left;
+    padding:0 10px 0 0;
+}
+
+#scroll6load2
+{
+    display:block;
+    float:left;
+    padding:0 10px 0 0;
+}
+
+#scroll6load3
+{
+    display:block;
+    float:left;
+    padding:0 10px 0 0;
+}
+
+.message-layout{
+    padding-right: 60px;
+    margin-bottom: 63px;
+    padding-left: 126px;
+    width: 1349px;
+    margin: 0 auto;
+}
+.message-layout .layout-background{
+    padding: 4px 0;
+    height: auto;
+}
+.message-layout .dialogue{
+    font-size: 12px;
+    line-height: 30px;
+    color: #fff;
+    padding-left: 35px;
+    float: left;
+}
+.message-layout-search{
+    float: right;
+    padding-right: 10px;
+    margin-top: 2px;
+}
+.message-layout-search input {
+
+    border: none;
+    box-shadow: none;
+    font-size: 11px;
+    line-height: 18px;
+    color: #fff;
+
+}
+.message-table{
+    display: table;
+    border: none;
+    padding-right:50px;
+    padding-left: 0;
+    padding-bottom: 9px
+}
+.message-row{
+    display: table-row;
+}
+.massage-cell{
+    display: table-cell;
+    font-size: 11px;
+    line-height: 18px;
+    background: #e1f6fb;
+    padding:12px 16px 10px 11px;
+    color: #555;
+    width: 430px;
+}
+.my-message{
+    padding-left:50px;
+    padding-right: 0
+}
+.my-message .massage-cell{
+    text-align: right;
+    background: #c3edf8;
+}
+.message-wrapper{
+    background: #fff;
+    clear: both;
+    padding: 32px 16px;
+    width: 540px;
+    float: left;
+    padding-bottom: 25px;
+}
+.massage-cell-wrapper{
+    display: inline-block;
+    text-align: left
+}
+
+.message-wrapper .scrollbarY{
+    overflow-y: scroll;
+    padding-right: 13px;
+    min-height: 320px;
+    max-height: 320px;
+}
+.create-message {
+    margin-top: 55px;
+}
+.create-message .textarea-layout{
+    border: 1px solid #55b2cc;
+    background: #faf9fa;
+    font-size: 11px;
+    line-height: 18px;
+    box-shadow: none;
+    padding: 12px 13px;
+    height: auto;
+    width: 100%;
+    resize: none;
+    color: #555;
+}
+#scrollbar1 .viewport {
+    height: 320px;
+}
+.create-message textarea:focus{
+    outline: none;
+}
+.send-message{
+    background: none;
+    box-shadow: none;
+    border: none;
+    color: #55b2cc;
+    font-size: 18px;
+    line-height: 18px;
+    font-family: NeuronLight;
+    letter-spacing: 0.1em;
+    float: right;
+    margin-top: 20px;
+    position: relative;
+    margin-right: 17px;
+}
+.send-message:focus{
+    outline: none;
+}
+.send-message:after{
+    content: '';
+    position: absolute;
+    background: url("/img/send.png");
+    width: 16px;
+    height: 14px;
+    background-repeat: no-repeat;
+    top: 2px;
+    right: -17px;
+}
+.friends-message-layout{
+    float: right;
+    width: 140px;
+
+    background-color: #50a3bb;
+    min-height: 537px;
+}
+.friends{
+    text-align: center;
+    padding: 13px 0;
+    position: relative;
+    cursor: pointer;
+}
+.friends.active{
+    background-color: #80c5d9
+}
+.friends.active .friends-block{
+    border: 2px solid #fff;
+}
+.friends.active .friends-block:after{
+    content: '';
+    position: absolute;
+    border: 12px solid transparent;
+    border-left: 12px solid #fff;
+    top: 55px;
+    left: 0;
+}
+.delete-friend{
+    position: absolute;
+    top: 4px;
+    right: 0;
+    border: none;
+    background: none;
+    color: #bfe2ec;
+    font-size: 16px;
+    font-family: Tahoma;
+}
+.delete-friend:focus{
+    outline: none;
+}
+.friends-block{
+    border-radius: 50%;
+    border: 2px solid #a8d1dd;
+    width: 72px;
+    height: 72px;
+    overflow: hidden;
+    margin-left: auto;
+    margin-right: auto;
+}
+.friends-block img{
+    width: 100%;
+}
+.friends-name div{
+    font-size: 16px;
+    line-height: 18px;
+    color: #fff;
+    text-align: center;
+}
+.message-layout .right-column{
+    margin-bottom: 70px;
+}
+.search-icon{
+    position: relative;
+    border: none;
+    background: none;
+    box-shadow: none;
+}
+.search-icon:focus{
+    outline: none;
+}
+.search input[type="submit"]{
+    background-image: url('/img/icon-search.png');
+    width: 14px;
+    height: 14px;
+    background-repeat: no-repeat;
+    vertical-align: middle;
+}
+.search{
+    background-color: #4996ac;
+    border: none;
+    box-shadow: none;
+    font-size: 11px;
+    line-height: 18px;
+    color: #fff;
+    padding: 4px 5px 4px 4px;
+}
+#scrollbar1 .thumb {
+    background: transparent url(/img/scroll-1.png) no-repeat 50% 100%;
+    height: 20px;
+    width: 25px;
+    cursor: pointer;
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    left: -5px;
+}
+#scrollbar1 .scrollbar {
+    background: none;
+}
+#scrollbar1 .thumb .end{
+    background: none;
+}
+#scrollbar1 .track{
+    background: none;
+}
+.friends-message-layout #scrollbar3{
+    height: 537px;
+    width: 140px;
+}
+.friends-message-layout #scrollbar3 .thumb{
+    background: transparent url(/img/scroll-2.png) no-repeat 50% 100%;
+    left: -3px;
+    background-repeat-y: repeat;
+}
+.friends-message-layout .viewport{
+    height: 537px;
+    width: 132px;
+}
+.friends-message-layout .overview{
+    width: 131px;
+}
+#scrollbar3 .thumb .end{
+    background: none;
+}
+#scrollbar3 .viewport {
+    height: 537px;
+}
+#scrollbar3 .scrollbar{
+    background: none;
+}
+#scrollbar3 .track{
+    background: none;
+}
+#scrollbar3{
+    margin: 0;
+}
+
+.nav > li > a:focus{
+    background-color: transparent;
+    outline: none;
+}
+
+.clearfix:after{
+    content: '';
+    display: block;
+    clear: both;
+}
+.clearfix:after{
+    content: '';
+    display: block;
+    clear: both;
+}

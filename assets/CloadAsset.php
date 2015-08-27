@@ -13,7 +13,9 @@ class CloadAsset extends MessageKushalpandyaAssets {
     public $js = [
         'js/private_mess_cload.js',
     ];
-    public $css = [];
+    public $css = [
+        'css/cload_message.css',
+    ];
     public $depends = [
         'vision\messages\assets\PrivateMessPoolingAsset',
         'vision\messages\assets\TinyscrollbarAsset'
