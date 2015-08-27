@@ -29,6 +29,9 @@ class CloadMessage extends PrivateMessageWidget {
     protected function getListUsers() {
         $users = \Yii::$app->mymessages->getAllUsers();
         $html = '<div class="list_users message-user-list friends-message-layout">';
+        $html .= '<div id="scrollbar3"><div class="scrollbar"><div class="track"><div class="thumb"><div class="end">';
+        $html .= '</div></div></div></div>';
+        $html .= '<div class="viewport"><div class="overview">';
 
         foreach($users as $usr) {
             $username = trim($usr[\Yii::$app->mymessages->attributeNameUser]);
@@ -47,7 +50,7 @@ class CloadMessage extends PrivateMessageWidget {
                 return $pre . "<div>$val</div>";
             });
             //if($usr['cnt_mess']){}
-            $html .= "</div></div>";
+            $html .= "</div></div></div></div></div>";
         }
 
         $html .= '</div>';
