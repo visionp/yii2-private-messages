@@ -252,6 +252,7 @@ var visiPrivateMessages = (function() {
         this.pools.start();
 
         $('#scrollbar1').tinyscrollbar();
+        $('#scrollbar3').tinyscrollbar();
 
     }
 })();
