@@ -15,7 +15,8 @@ class CloadAsset extends MessageKushalpandyaAssets {
     ];
     public $css = [];
     public $depends = [
-        'vision\messages\assets\PrivateMessPoolingAsset'
+        'vision\messages\assets\PrivateMessPoolingAsset',
+        'vision\messages\assets\TinyscrollbarAsset'
     ];
 
 }

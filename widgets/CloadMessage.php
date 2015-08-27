@@ -58,7 +58,7 @@ class CloadMessage extends PrivateMessageWidget {
     protected function getBoxMessages() {
         $html = '';
         $html .= '<div class="message-thread message-wrapper clearfix">';
-        $html .= '<div id="scrollbarY">';
+        $html .= '<div id="scrollbar1">';
         $html .= '<div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>';
         $html .= '<div class="viewport"><div class="overview message-container">';
         $html .= '</div></div></div>';

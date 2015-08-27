@@ -244,5 +244,7 @@ var visiPrivateMessages = (function() {
         this.pools.addListener('newData', this.fromPooling);
         this.pools.start();
 
+        $('#scrollbarY').tinyscrollbar();
+
     }
 })();
