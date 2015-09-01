@@ -11,8 +11,7 @@
         }
     ],
     "require": {
-        "yiisoft/yii2": "*",
-        "bower-asset/tinyscrollbar": "dev-master"
+        "yiisoft/yii2": "*"
     },
     "autoload": {
         "psr-4": {
