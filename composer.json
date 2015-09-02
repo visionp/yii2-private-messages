@@ -10,6 +10,7 @@
             "email": "visionp1986@gmail.com"
         }
     ],
+    "minimum-stability": "dev-master",
     "require": {
         "yiisoft/yii2": "*",
         "bower-asset/tinyscrollbar": "dev-master"
