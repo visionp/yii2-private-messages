@@ -224,8 +224,7 @@ var visiPrivateMessages = (function() {
 
         //resize tinyscrollbar
         this.Scroll = function() {
-            $('.viewport').animate({scrollTop: $('.viewport').prop("scrollHeight")}, 500);
-            $(window).trigger('resize')
+            scrollbar1.data("plugin_tinyscrollbar").update('bottom');
         };
 
 
@@ -251,7 +250,8 @@ var visiPrivateMessages = (function() {
         this.pools.addListener('newData', this.fromPooling);
         this.pools.start();
 
-        $('#scrollbar1').tinyscrollbar();
+        var scrollbar1 = $('#scrollbar1')
+        scrollbar1.tinyscrollbar();
         $('#scrollbar3').tinyscrollbar();
 
     }
