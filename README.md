@@ -72,7 +72,12 @@ yii migrate --migrationPath=@vendor/vision/yii2-private-messages/migrations/
                 //в качестве аргумента передается объект модели пользователя
             'getEmail' => function($user_model) {
                 return $user_model->email;
-            },            
+            },
+                //задаем функцию для возврата лого пользователей в списке контактов (для виджета cloud)
+                //в качестве аргумента передается id пользователя
+            'getLogo' => function($user_id) {
+                return '\img\ghgsd.jpg';
+            },
                 //указываем шаблоны сообщений, в них будет передаваться сообщение $message
             'templateEmail' => [
                 'html' => 'private-message-text',
