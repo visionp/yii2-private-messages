@@ -89,7 +89,7 @@ class CloadMessage extends PrivateMessageWidget {
         $html .= '<div class="message-layout-search">';
         $html .= '<form><div class="search">';
         $html .= '<input type="search">';
-        $html .= '<input type="submit" value="">';
+        $html .= '<input type="submit" disabled="disabled" value="">';
         $html .= '</div></form></div></div></div>';
         return $html;
     }
