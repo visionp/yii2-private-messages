@@ -774,4 +774,5 @@ div.main-message-container .layout-background {
 }
 .search input {
     color: grey;
+    background: transparent;
 }
