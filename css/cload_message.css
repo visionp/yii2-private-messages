@@ -769,3 +769,18 @@
     display: block;
     clear: both;
 }
+
+
+div.main-message-container {
+    width: 750px;
+    border: 1px solid black;
+}
+
+div.message-north .right-layout{
+    background: #65b8d0;
+    padding-bottom: 50px;
+}
+
+div.main-message-container .layout-background {
+    background: #63b2c9;
+}
