@@ -241,6 +241,7 @@ var visiPrivateMessages = (function() {
                     target.hide();
                 }
             });
+            scrollbar3.data("plugin_tinyscrollbar").update();
         });
 
         di[id_block] = this;
@@ -252,7 +253,7 @@ var visiPrivateMessages = (function() {
 
         var scrollbar1 = $('#scrollbar1')
         scrollbar1.tinyscrollbar();
-        $('#scrollbar3').tinyscrollbar();
+        var scrollbar3 = $('#scrollbar3').tinyscrollbar();
 
     }
 })();
