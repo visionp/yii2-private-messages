@@ -41,9 +41,9 @@ yii migrate --migrationPath=@vendor/vision/yii2-private-messages/migrations/
      public function actions()
      {
          return [
-             'private-messages' => array(
+             'private-messages' => [
                  'class' => \vision\messages\actions\MessageApiAction::className()
-             )
+             ]
          ];
      }
   ```
@@ -86,6 +86,10 @@ yii migrate --migrationPath=@vendor/vision/yii2-private-messages/migrations/
      
 Для работы достаточно во вьюхе вывести виджет
 
+```
+<?= vision\messages\widgets\CloadMessage::widget() ?>
+```
+или
 ```
 <?= vision\messages\widgets\PrivateMessageKushalpandyaWidget::widget() ?>
 ```
