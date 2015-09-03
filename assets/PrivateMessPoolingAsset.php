@@ -9,12 +9,14 @@
 namespace vision\messages\assets;
 
 
-class PrivateMessPoolingAsset extends \yii\web\AssetBundle {
-    public $sourcePath = '@vendor/vision/yii2-private-messages';
+class PrivateMessPoolingAsset extends BaseMessageAssets {
+
     public $js = [
         'js/private_mess_pooling.js',
     ];
+
     public $depends = [
         'yii\web\JqueryAsset'
     ];
+
 } 

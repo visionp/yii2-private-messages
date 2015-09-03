@@ -9,13 +9,16 @@
 namespace vision\messages\assets;
 
 
-class CloadAsset extends MessageKushalpandyaAssets {
+class CloadAsset extends BaseMessageAssets {
+
     public $js = [
         'js/private_mess_cload.js',
     ];
+
     public $css = [
         'css/cload_message.css',
     ];
+
     public $depends = [
         'vision\messages\assets\PrivateMessPoolingAsset',
         'vision\messages\assets\TinyscrollbarAsset'

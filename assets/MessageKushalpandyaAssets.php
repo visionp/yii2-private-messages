@@ -9,12 +9,12 @@
 namespace vision\messages\assets;
 
 
-class MessageKushalpandyaAssets extends \yii\web\AssetBundle  {
+class MessageKushalpandyaAssets extends BaseMessageAssets  {
 
-    public $sourcePath = '@vendor/vision/yii2-private-messages/';
     public $css = [
         'css/kushalpandya.css',
     ];
+
     public $depends = [
         'vision\messages\assets\MessageAssets'
     ];
