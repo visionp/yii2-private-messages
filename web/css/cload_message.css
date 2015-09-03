@@ -27,7 +27,7 @@
 
 #scrollbar1 .scrollbar
 {
-    background:transparent url(../images/bg-scrollbar-track-y.png) no-repeat 0 0;
+    background:transparent url(img/bg-scrollbar-track-y.png) no-repeat 0 0;
     position:absolute;
     top:0;
     right:0;
@@ -36,7 +36,7 @@
 
 #scrollbar1 .track
 {
-    background:transparent url(../images/bg-scrollbar-trackend-y.png) no-repeat 0 100%;
+    background:transparent url(img/bg-scrollbar-trackend-y.png) no-repeat 0 100%;
     height:100%;
     width:15px;
     position:relative;
@@ -44,7 +44,7 @@
 
 #scrollbar1 .thumb
 {
-    background:transparent url(../images/bg-scrollbar-thumb-y.png) no-repeat 50% 100%;
+    background:transparent url(img/bg-scrollbar-thumb-y.png) no-repeat 50% 100%;
     height:20px;
     width:25px;
     cursor:pointer;
@@ -56,7 +56,7 @@
 
 #scrollbar1 .thumb .end
 {
-    background:transparent url(../images/bg-scrollbar-thumb-y.png) no-repeat 50% 0;
+    background:transparent url(img/bg-scrollbar-thumb-y.png) no-repeat 50% 0;
     overflow:hidden;
     height:5px;
     width:25px;
@@ -109,7 +109,7 @@
 
 #scrollbar2 .scrollbar
 {
-    background:transparent url(../images/bg-scrollbar-track-x.png) no-repeat 0 0;
+    background:transparent url(img/bg-scrollbar-track-x.png) no-repeat 0 0;
     position:relative;
     margin:0 0 5px;
     clear:both;
@@ -118,7 +118,7 @@
 
 #scrollbar2 .track
 {
-    background:transparent url(../images/bg-scrollbar-trackend-x.png) no-repeat 100% 0;
+    background:transparent url(img/bg-scrollbar-trackend-x.png) no-repeat 100% 0;
     width:100%;
     height:15px;
     position:relative;
@@ -126,7 +126,7 @@
 
 #scrollbar2 .thumb
 {
-    background:transparent url(../images/bg-scrollbar-thumb-x.png) no-repeat 100% 50%;
+    background:transparent url(img/bg-scrollbar-thumb-x.png) no-repeat 100% 50%;
     height:25px;
     cursor:pointer;
     overflow:hidden;
@@ -137,7 +137,7 @@
 
 #scrollbar2 .thumb .end
 {
-    background:transparent url(../images/bg-scrollbar-thumb-x.png) no-repeat 0 50%;
+    background:transparent url(img/bg-scrollbar-thumb-x.png) no-repeat 0 50%;
     overflow:hidden;
     height:25px;
     width:5px;
@@ -184,7 +184,7 @@
 
 #scrollbar3 .scrollbar
 {
-    background:transparent url(../images/bg-scrollbar-track-y.png) no-repeat 0 0;
+    background:transparent url(img/bg-scrollbar-track-y.png) no-repeat 0 0;
     position:absolute;
     top:0;
     right:0;
@@ -193,7 +193,7 @@
 
 #scrollbar3 .track
 {
-    background:transparent url(../images/bg-scrollbar-trackend-y.png) no-repeat 0 100%;
+    background:transparent url(img/bg-scrollbar-trackend-y.png) no-repeat 0 100%;
     height:100%;
     width:15px;
     position:relative;
@@ -201,7 +201,7 @@
 
 #scrollbar3 .thumb
 {
-    background:transparent url(../images/bg-scrollbar-thumb-y.png) no-repeat 50% 100%;
+    background:transparent url(img/bg-scrollbar-thumb-y.png) no-repeat 50% 100%;
     height:20px;
     width:25px;
     cursor:pointer;
@@ -213,7 +213,7 @@
 
 #scrollbar3 .thumb .end
 {
-    background:transparent url(../images/bg-scrollbar-thumb-y.png) no-repeat 50% 0;
+    background:transparent url(img/bg-scrollbar-thumb-y.png) no-repeat 50% 0;
     overflow:hidden;
     height:5px;
     width:25px;
@@ -257,7 +257,7 @@
 
 #scrollbar4 .scrollbar
 {
-    background:transparent url(../images/bg-scrollbar-track-y.png) no-repeat 0 0;
+    background:transparent url(img/bg-scrollbar-track-y.png) no-repeat 0 0;
     position:absolute;
     top:0;
     right:0;
@@ -266,7 +266,7 @@
 
 #scrollbar4 .track
 {
-    background:transparent url(../images/bg-scrollbar-trackend-y.png) no-repeat 0 100%;
+    background:transparent url(img/bg-scrollbar-trackend-y.png) no-repeat 0 100%;
     height:100%;
     width:15px;
     position:relative;
@@ -274,7 +274,7 @@
 
 #scrollbar4 .thumb
 {
-    background:transparent url(../images/bg-scrollbar-thumb-y.png) no-repeat 50% 100%;
+    background:transparent url(img/bg-scrollbar-thumb-y.png) no-repeat 50% 100%;
     height:20px;
     width:25px;
     cursor:pointer;
@@ -286,7 +286,7 @@
 
 #scrollbar4 .thumb .end
 {
-    background:transparent url(../images/bg-scrollbar-thumb-y.png) no-repeat 50% 0;
+    background:transparent url(img/bg-scrollbar-thumb-y.png) no-repeat 50% 0;
     overflow:hidden;
     height:5px;
     width:25px;
@@ -330,7 +330,7 @@
 
 #scrollbar5 .scrollbar
 {
-    background:transparent url(../images/bg-scrollbar-track-y.png) no-repeat 0 0;
+    background:transparent url(img/bg-scrollbar-track-y.png) no-repeat 0 0;
     position:absolute;
     top:0;
     right:0;
@@ -339,7 +339,7 @@
 
 #scrollbar5 .track
 {
-    background:transparent url(../images/bg-scrollbar-trackend-y.png) no-repeat 0 100%;
+    background:transparent url(img/bg-scrollbar-trackend-y.png) no-repeat 0 100%;
     height:100%;
     width:15px;
     position:relative;
@@ -347,7 +347,7 @@
 
 #scrollbar5 .thumb
 {
-    background:transparent url(../images/bg-scrollbar-thumb-y.png) no-repeat 50% 100%;
+    background:transparent url(img/bg-scrollbar-thumb-y.png) no-repeat 50% 100%;
     height:20px;
     width:25px;
     cursor:pointer;
@@ -359,7 +359,7 @@
 
 #scrollbar5 .thumb .end
 {
-    background:transparent url(../images/bg-scrollbar-thumb-y.png) no-repeat 50% 0;
+    background:transparent url(img/bg-scrollbar-thumb-y.png) no-repeat 50% 0;
     overflow:hidden;
     height:5px;
     width:25px;
@@ -415,7 +415,7 @@
 
 #scrollbar6 .scrollbar
 {
-    background:transparent url(../images/bg-scrollbar-track-y.png) no-repeat 0 0;
+    background:transparent url(img/bg-scrollbar-track-y.png) no-repeat 0 0;
     position:absolute;
     top:0;
     right:0;
@@ -424,7 +424,7 @@
 
 #scrollbar6 .track
 {
-    background:transparent url(../images/bg-scrollbar-trackend-y.png) no-repeat 0 100%;
+    background:transparent url(img/bg-scrollbar-trackend-y.png) no-repeat 0 100%;
     height:100%;
     width:15px;
     position:relative;
@@ -432,7 +432,7 @@
 
 #scrollbar6 .thumb
 {
-    background:transparent url(../images/bg-scrollbar-thumb-y.png) no-repeat 50% 100%;
+    background:transparent url(img/bg-scrollbar-thumb-y.png) no-repeat 50% 100%;
     height:20px;
     width:25px;
     cursor:pointer;
@@ -444,7 +444,7 @@
 
 #scrollbar6 .thumb .end
 {
-    background:transparent url(../images/bg-scrollbar-thumb-y.png) no-repeat 50% 0;
+    background:transparent url(img/bg-scrollbar-thumb-y.png) no-repeat 50% 0;
     overflow:hidden;
     height:5px;
     width:25px;
@@ -720,7 +720,7 @@
     width: 140px;
 }
 .friends-message-layout #scrollbar3 .thumb{
-    background: transparent url(/img/scroll-2.png) no-repeat 50% 100%;
+    background: transparent url(img/scroll-2.png) no-repeat 50% 100%;
     left: -3px;
     background-repeat-y: repeat;
 }
