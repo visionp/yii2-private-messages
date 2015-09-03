@@ -766,7 +766,7 @@
 
 div.main-message-container {
     width: 750px;
-    border: 1px solid black;
+    border: 2px solid #7ECBD4;
 }
 
 div.message-north .right-layout{
