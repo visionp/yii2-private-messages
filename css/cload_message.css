@@ -777,3 +777,7 @@ div.message-north .right-layout{
 div.main-message-container .layout-background {
     background: #63b2c9;
 }
+
+.search input {
+    color: grey;
+}
