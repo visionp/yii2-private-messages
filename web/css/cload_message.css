@@ -613,9 +613,8 @@
 .friends-message-layout{
     float: right;
     width: 140px;
-
     background-color: #50a3bb;
-    min-height: 537px;
+    min-height: 540px;
 }
 .friends{
     text-align: center;
@@ -762,22 +761,17 @@
     display: block;
     clear: both;
 }
-
-
 div.main-message-container {
     width: 750px;
     border: 2px solid #7ECBD4;
 }
-
 div.message-north .right-layout{
     background: #65b8d0;
     padding-bottom: 50px;
 }
-
 div.main-message-container .layout-background {
     background: #63b2c9;
 }
-
 .search input {
     color: grey;
 }
