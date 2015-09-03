@@ -40,11 +40,14 @@ class CloadMessage extends PrivateMessageWidget {
             $html .= '<div class="contact friends" data-name="' . $username . '" data-user="' . $usr['id'] . '">';
 
             $html .= '<button class="delete-friend">&times;</button>';
-            $html .= '<div class="friends-block">';
 
-            $html .=  \Yii::$app->mymessages->createLogo($usr['id']);
+            $img = \Yii::$app->mymessages->createLogo($usr['id']);
+            if($img) {
+                $html .= '<div class="friends-block">';
+                $html .=  $img;
+                $html .= '</div>';
+            }
 
-            $html .= '</div>';
             $html .= '<div class="friends-name">';
 
             $html .= array_reduce($names, function($pre, $val) {
