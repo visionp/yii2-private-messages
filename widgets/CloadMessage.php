@@ -85,7 +85,7 @@ class CloadMessage extends PrivateMessageWidget {
         $html = '<div class="right-layout">';
         $html .= '<div class="separate"></div>';
         $html .= '<div class="layout-background clearfix">';
-        $html .= '<div class="dialogue">ДИАЛОГИ</div>';
+        $html .= '<div class="dialogue">Message</div>';
         $html .= '<div class="message-layout-search">';
         $html .= '<form><div class="search">';
         $html .= '<input type="search">';
