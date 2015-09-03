@@ -781,3 +781,7 @@ div.main-message-container .search input:focus {
     outline: none;
     border:none;
 }
+
+button.delete-friend {
+    display:none;
+}
