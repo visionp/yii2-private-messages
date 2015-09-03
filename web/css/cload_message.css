@@ -773,6 +773,11 @@ div.main-message-container .layout-background {
     background: #63b2c9;
 }
 .search input {
-    color: grey;
+    color: white;
     background: transparent;
+}
+
+div.main-message-container .search input:focus {
+    outline: none;
+    border:none;
 }
