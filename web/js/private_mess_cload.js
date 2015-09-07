@@ -211,7 +211,7 @@ var visiPrivateMessages = (function() {
         });
 
         //обработка клика по кнопке удаления диалога
-        self.find('button.delete-friend').click(function(event){
+        self.mainBox.find('button.delete-friend').click(function(event){
             var target = $(this).parent('div.contact');
             var user_id = target.data('user');
             if(user_id) {
