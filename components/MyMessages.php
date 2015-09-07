@@ -178,11 +178,22 @@ class MyMessages extends Component {
 
 
     public function clearMessages($from_id) {
-        return \Yii::$app->db->createCommand()
+        $params = [':whom_user_id' => $from_id, ':from_user_id' => \Yii::$app->user->id];
+        $result = \Yii::$app->db->createCommand()
             ->update(Messages::tableName(), ['is_delete_from' => 1],
-            '(from_id = :from_user_id AND whom_id = :whom_user_id) OR (from_id = :from_user_id AND whom_id = :whom_user_id)',
-            [':whom_user_id' => $from_id, ':from_user_id' => \Yii::$app->user->id])
+                'from_id = :from_user_id AND whom_id = :whom_user_id',
+                $params)
             ->execute();
+
+        if($result) {
+            $result += \Yii::$app->db->createCommand()
+                ->update(Messages::tableName(), ['is_delete_whom' => 1],
+                    'from_id = :whom_user_id AND whom_id = :from_user_id',
+                    $params)
+                ->execute();
+        }
+
+        return $result;
     }
 
 
