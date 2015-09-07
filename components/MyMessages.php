@@ -209,7 +209,7 @@ class MyMessages extends Component {
         $model = new Messages();
         $model->from_id = $this->getIdCurrentUser();
         $model->whom_id = $whom_id;
-        $model->message = strip_tags($message);
+        $model->message = \yii\helpers\Html::encode($message);
         if($this->enableEmail && $send_email) {
             $this->_sendEmail($whom_id, $message);
         }
