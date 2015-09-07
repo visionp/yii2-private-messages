@@ -77,6 +77,16 @@ class MessageApiAction extends Action {
     }
 
 
+    protected function clearMessage() {
+        $return = false;
+        $user_id = \Yii::$app->request->get('user_id', false);
+        if($user_id) {
+            $return = \Yii::$app->mymessages->clearMessages($user_id);
+        }
+        return $return;
+    }
+
+
     protected function pooling() {
         $last_id = \Yii::$app->request->get('last_id', false);
         $data    = \Yii::$app->mymessages->checkMessage($last_id);

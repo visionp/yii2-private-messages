@@ -57,7 +57,7 @@ class MyMessages extends Component {
         if(!$this->modelUser) {
             $this->modelUser = \Yii::$app->user->identityClass;
         }
-        $this->userTableName = call_user_func(Array($this->modelUser, 'tableName'));
+        $this->userTableName = call_user_func([$this->modelUser, 'tableName']);
     }
 
 
@@ -177,6 +177,15 @@ class MyMessages extends Component {
     }
 
 
+    public function clearMessages($from_id) {
+        return \Yii::$app->db->createCommand()
+            ->update($this->userTableName, ['is_delete_from' => 1],
+            '(from_id = :from_user_id AND whom_id = :whom_user_id) OR (from_id = :from_user_id AND whom_id = :whom_user_id)',
+            [':whom_user_id' => $from_id, ':from_user_id' => \Yii::$app->user->id])
+            ->execute();
+    }
+
+
     /**
      * Method to sendMessage.
      *
@@ -244,7 +253,7 @@ class MyMessages extends Component {
      * @return array
      */
     protected function _sendMessages(Array $whom_ids, $message, $sendEmail = false) {
-        $result = Array();
+        $result = [];
         foreach($whom_ids as $id) {
             $result[] = $this->_sendMessage($id, $message, $sendEmail);
         }
@@ -421,7 +430,7 @@ class MyMessages extends Component {
         }
 
         $return = $query->orderBy('msg.id')->all();
-        $ids = Array();
+        $ids = [];
         foreach($return as $m) {
             if($m['whom_id'] == $my_id) {
                 $ids[] = $m['id'];

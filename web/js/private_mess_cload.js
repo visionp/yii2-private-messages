@@ -210,6 +210,28 @@ var visiPrivateMessages = (function() {
             }
         });
 
+        //обработка клика по кнопке удаления диалога
+        self.find('button.delete-friend').click(function(event){
+            var target = $(this).parent('div.contact');
+            var user_id = target.data('user');
+            if(user_id) {
+                $.ajax({
+                    type: "GET",
+                    url: self.base_url,
+                    data: {user_id:user_id, action:'clearMessage'},
+                    success: function(msg){
+                        if(msg.status) {
+                            self.updateBox();
+                        } else {
+                            self.log('error: ' + 'deleteMessage');
+                            self.log(msg);
+                        }
+                    }
+                });
+            }
+            return false;
+        })
+
         //обработка кликов на контакты
         this.mainBox.find('.contact').click(function(event){
             var user_id = $(this).data('user');
@@ -251,7 +273,7 @@ var visiPrivateMessages = (function() {
         this.pools.addListener('newData', this.fromPooling);
         this.pools.start();
 
-        var scrollbar1 = $('#scrollbar1')
+        var scrollbar1 = $('#scrollbar1');
         scrollbar1.tinyscrollbar();
         var scrollbar3 = $('#scrollbar3').tinyscrollbar();
 
