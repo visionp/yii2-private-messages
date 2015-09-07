@@ -221,7 +221,7 @@ var visiPrivateMessages = (function() {
                     data: {user_id:user_id, action:'clearMessage'},
                     success: function(msg){
                         if(msg.status) {
-                            self.updateBox();
+                            target.trigger('click');
                         } else {
                             self.log('error: ' + 'deleteMessage');
                             self.log(msg);
