@@ -99,3 +99,22 @@ yii migrate --migrationPath=@vendor/vision/yii2-private-messages/migrations/
 <?= vision\messages\widgets\PrivateMessageKushalpandyaWidget::widget() ?>
 ```
 
+
+
+Если необходимо в фоне проверять новые сообщения мы можем зарегестрировать 
+vision\messages\assets\PrivateMessPoolingAsset
+
+и добавить нужный нам слушатель
+
+<?php
+$base_script = "var baseUrlPrivateMessage ='" . \Yii::$app->mymessages->nameController . "';";
+$this->registerJs($base_script, yii\web\View::POS_BEGIN);
+?>
+
+<script>
+var listener = new privateMessPooling();
+listener.addListener('newData', function(result){
+    console.log(result);
+});
+listener.start();
+</script>
