@@ -15,16 +15,16 @@ var privateMessPooling = (function() {
     };
 
     return function(max_id) {
+        if(di != false) {
+            return di;
+        }
+
         if(typeof max_id == 'undefined') {
             max_id = 0;
         }
         //обновляем последний полученный id сообщения
         if(max_id > lastId) {
             lastId = max_id;
-        }
-
-        if(di != false) {
-            return di;
         }
 
         var activeTimeout = false;
