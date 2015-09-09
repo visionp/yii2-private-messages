@@ -360,7 +360,7 @@ class MyMessages extends Component {
         $sql .= "left join ";
         $sql .= "(select from_id, count(id) as cnt from $table_name where status = 1 and whom_id = :user_id GROUP by from_id) as msg ON usr.id = msg.from_id ";
         $sql .= " where usr.id != :user_id ";
-        $sql .= " Order by msg.cnt DESC ";
+        $sql .= " Order by msg.cnt DESC, usr.$this->attributeNameUser ";
 
         $connection = \Yii::$app->db;
         $model = $connection->createCommand($sql);
