@@ -517,13 +517,13 @@ class MyMessages extends Component {
                     $this->adminIds[] = $p;
                 }
                 if(is_string($p)){
-                    $this->adminIds[] = array_merge($this->adminIds, $this->getUsersByRoles($p));
+                    $this->adminIds = array_merge($this->adminIds, $this->getUsersByRoles($p));
                 }
             }
         }elseif(is_integer($this->admins)) {
             $this->adminIds[] = $this->admins;
         }elseif(is_string($this->admins)){
-            $this->adminIds[] = array_merge($this->adminIds, $this->getUsersByRoles($this->admins));
+            $this->adminIds = array_merge($this->adminIds, $this->getUsersByRoles($this->admins));
         }
         $return = array_unique($this->adminIds);
         $return = array_filter($return);
