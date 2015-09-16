@@ -451,10 +451,16 @@ class MyMessages extends Component {
         if($type) {
             $query->andWhere(['=', 'msg.status', $type]);
         } else {
+            /*
             $query->andWhere('((msg.is_delete_from != 1 AND from_id = :my_id) OR (msg.is_delete_whom != 1 AND whom_id = :my_id) ) ', [
                 ':my_id' => $my_id,
             ]);
+            */
         }
+
+        $query->andWhere('((msg.is_delete_from != 1 AND from_id = :my_id) OR (msg.is_delete_whom != 1 AND whom_id = :my_id) ) ', [
+            ':my_id' => $my_id,
+        ]);
 
         if($last_id){
             $query->andWhere(['>', 'msg.id', $last_id]);
