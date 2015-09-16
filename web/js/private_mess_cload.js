@@ -122,6 +122,7 @@ var visiPrivateMessages = (function() {
             html += '<div data-id="' + n['id']  +'" class="message message-table ' + (n['i_am_sender'] ? 'my-message' : '') + '">';
             html += '<div class="message-row">';
             html += '<div class="massage-cell">';
+            html += '<span class="delete-message">+</span>';
             html += '<span class="massage-cell-wrapper">' + n['message'] + '</span>';
             html += '</div></div></div>';
             return html;

@@ -781,3 +781,17 @@ div.main-message-container .search input:focus {
     outline: none;
     border:none;
 }
+
+span.delete-message{
+    display: block;
+    position: absolute;
+    top: 0px;
+    right: 8px;
+    transform: rotate(45deg);
+    cursor: pointer;
+    font-size: 18px;
+}
+
+span.delete-message:hover{
+    color: #FF5C5C;
+}

@@ -119,7 +119,7 @@ var visiPrivateMessages = (function() {
         this.createHtmlMessage = function(n) {
             var html = '';
             html += '<div data-id="' + n['id']  +'" class="message ' + (n['i_am_sender'] ? 'bubble-right' : 'bubble-left') + '">';
-            html += '<span class="delete-message">X</span>';
+            html += '<span class="delete-message">+</span>';
             html += '<label class="message-user">' + n['from_name'] + '</label>';
             html += '<label class="message-timestamp">' + n['created_at'] +'</label>';
             html += '<p>' + n['message'] + '</p>';
