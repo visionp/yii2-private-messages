@@ -526,7 +526,12 @@ class MyMessages extends Component {
             $this->adminIds[] = array_merge($this->adminIds, $this->getUsersByRoles($this->admins));
         }
         $return = array_unique($this->adminIds);
-        $this->adminIds = array_filter($return);
+        $return = array_filter($return);
+        if(empty($return) || !count($return)){
+            throw new EceptionMessages('Not found admins.');
+        }
+        $this->adminIds = $return;
+
         return $this->adminIds;
     }
 
