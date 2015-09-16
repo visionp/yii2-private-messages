@@ -14,6 +14,7 @@ use yii\helpers\Html;
 use vision\messages\models\Messages;
 use vision\messages\exceptions\EceptionMessages;
 use vision\messages\events\MessageEvent;
+use yii\base\InvalidConfigException;
 
 
 
@@ -35,6 +36,9 @@ class MyMessages extends Component {
     public $enableEmail = false;
 
     /** @var boolean */
+    public $admins = null;
+
+    /** @var boolean */
     public $isSystem = false;
 
     /** @var function */
@@ -52,6 +56,9 @@ class MyMessages extends Component {
     /** @var string */
     protected $userTableName;
 
+    /** @var array */
+    protected $adminIds = null;
+
 
     public function init(){
         if(!$this->modelUser) {
@@ -63,6 +70,13 @@ class MyMessages extends Component {
 
     public function sendMessage($whom_id, $message, $sendEmail = false) {
         $result = null;
+
+        if($this->admins && !in_array(\Yii::$app->user->id, $this->getAdminIds())) {
+            if(!in_array($whom_id, $this->getAdminIds())){
+                $whom_id = $this->getAdminIds();
+            }
+        }
+
         if(!is_numeric($whom_id) && is_string($whom_id)){
             $ids = $this->getUsersByRoles($whom_id);
             return $this->sendMessage($ids, $message, $send_email);
@@ -360,6 +374,11 @@ class MyMessages extends Component {
         $sql .= "left join ";
         $sql .= "(select from_id, count(id) as cnt from $table_name where status = 1 and whom_id = :user_id GROUP by from_id) as msg ON usr.id = msg.from_id ";
         $sql .= " where usr.id != :user_id ";
+
+        if($this->admins && !in_array(\Yii::$app->user->id, $this->getAdminIds())) {
+            $sql .= " AND usr.id IN (" . implode(',', $this->adminIds) . ") ";
+        }
+
         $sql .= " Order by msg.cnt DESC, usr.$this->attributeNameUser ";
 
         $connection = \Yii::$app->db;
@@ -476,6 +495,39 @@ class MyMessages extends Component {
 
     protected function getIdCurrentUser() {
         return \Yii::$app->user->isGuest || $this->isSystem ? null : \Yii::$app->user->id;
+    }
+
+
+    /**
+     * Method to getAdminIds.
+     *
+     * @return array | null
+     */
+    protected function getAdminIds() {
+        if(!empty($this->adminIds)){
+            return $this->adminIds;
+        }
+        if(empty($this->admins)) {
+            return null;
+        }
+        $this->adminIds = [];
+        if(is_array($this->admins)) {
+            foreach($this->admins as $p){
+                if(is_integer($p)){
+                    $this->adminIds[] = $p;
+                }
+                if(is_string($p)){
+                    $this->adminIds[] = array_merge($this->adminIds, $this->getUsersByRoles($p));
+                }
+            }
+        }elseif(is_integer($this->admins)) {
+            $this->adminIds[] = $this->admins;
+        }elseif(is_string($this->admins)){
+            $this->adminIds[] = array_merge($this->adminIds, $this->getUsersByRoles($this->admins));
+        }
+        $return = array_unique($this->adminIds);
+        $this->adminIds = array_filter($return);
+        return $this->adminIds;
     }
 
 
