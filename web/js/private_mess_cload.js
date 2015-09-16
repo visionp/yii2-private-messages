@@ -60,7 +60,7 @@ var visiPrivateMessages = (function() {
             $.ajax({
                 type: "GET",
                 url: self.base_url,
-                data: {whom_id:whom_id, text:text, isEmail:self.isEmail, action:'sendMessage'},
+                data: {whom_id:whom_id, text:text, isEmail:self.isEmail ? self.isEmail : '', action:'sendMessage'},
                 success: function(msg){
                     if(msg.status) {
                         self.updateBox(msg.data);
