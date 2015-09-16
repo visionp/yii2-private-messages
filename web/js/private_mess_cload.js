@@ -205,7 +205,7 @@ var visiPrivateMessages = (function() {
         self.mainBox.click(function(event) {
             var target = $(event.target);
             if(target.is('span.delete-message')) {
-                var idMessage = target.parent('div.message').data('id');
+                var idMessage = target.parents('div.message').data('id');
                 self.deleteMessage(idMessage);
                 return false;
             }
