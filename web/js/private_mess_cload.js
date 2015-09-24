@@ -150,7 +150,18 @@ var visiPrivateMessages = (function() {
             } else {
                 counter.hide();
             }
+            self.sortList();
             return self;
+        };
+
+
+        //сортировка контактов
+        this.sortList = function(){
+            self.mainBox.find('div.list_users div.overview div.contact').sortElements(function (a, b) {
+                var f = $(a).find('span.counter-message').html();
+                var s = $(b).find('span.counter-message').html();
+                return (f > s) ? -1 : (f < s) ? 1 : 0;
+            });
         };
 
         this.deleteMessage = function(idMessage) {
