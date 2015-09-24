@@ -798,6 +798,7 @@ span.delete-message:hover{
 }
 
 .counter-message{
+    display:none;
     position: absolute;
     top: 9px;
     left: 24px;
