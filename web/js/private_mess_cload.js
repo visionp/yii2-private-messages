@@ -143,9 +143,8 @@ var visiPrivateMessages = (function() {
 
         //Установить кол-во новых сообщений в списке пользователей
         this.setCountMessToList = function(user_id, count) {
-            //self.mainBox.find('li.contact[data-user=' + user_id + '] #cnt').eq(0).html(count);
-            //return self;
-            return '';
+            self.mainBox.find('div.contact[data-user=' + user_id + '] span.counter-message').eq(0).html(count);
+            return self;
         };
 
         this.deleteMessage = function(idMessage) {

@@ -41,10 +41,16 @@ class CloadMessage extends PrivateMessageWidget {
 
             $html .= '<button class="delete-friend">&times;</button>';
 
+            $html .= '<span class="counter-message">';
+            if($usr['cnt_mess']){
+                $html .=  $usr['cnt_mess'];
+            }
+            $html .= '</span>';
             $img = \Yii::$app->mymessages->createLogo($usr['id']);
             if($img) {
                 $html .= '<div class="friends-block">';
                 $html .=  $img;
+
                 $html .= '</div>';
             }
 

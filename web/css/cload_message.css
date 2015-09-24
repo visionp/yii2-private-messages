@@ -796,3 +796,15 @@ span.delete-message{
 span.delete-message:hover{
     color: #FF5C5C;
 }
+
+.counter-message{
+    position: absolute;
+    top: 9px;
+    left: 24px;
+    color: #fff;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    background-color: #bd9b51;
+    padding-top: 2px;
+}
