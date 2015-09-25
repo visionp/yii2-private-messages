@@ -23,7 +23,7 @@ class CloadAsset extends BaseMessageAssets {
     public $depends = [
         'vision\messages\assets\PrivateMessPoolingAsset',
         'vision\messages\assets\TinyscrollbarAsset',
-        'SortElementsAsset'
+        'vision\messages\assets\SortElementsAsset'
     ];
 
 }
