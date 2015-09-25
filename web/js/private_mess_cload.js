@@ -285,7 +285,6 @@ var visiPrivateMessages = (function() {
 
         di[id_block] = this;
 
-
         this.pools = new privateMessPooling(self.lastId);
         this.pools.addListener('newData', this.fromPooling);
         this.pools.start();
