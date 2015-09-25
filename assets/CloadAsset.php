@@ -12,7 +12,6 @@ namespace vision\messages\assets;
 class CloadAsset extends BaseMessageAssets {
 
     public $js = [
-        'js/sortElement.js',
         'js/private_mess_cload.js'
     ];
 
