@@ -16,7 +16,6 @@ class SortElementsAsset extends BaseMessageAssets {
 
 
     public $depends = [
-        'vision\messages\assets\PrivateMessPoolingAsset',
         'yii\web\JqueryAsset'
     ];
 }
