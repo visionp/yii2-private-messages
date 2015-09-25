@@ -12,8 +12,8 @@ namespace vision\messages\assets;
 class CloadAsset extends BaseMessageAssets {
 
     public $js = [
-        'js/private_mess_cload.js',
-        'js/sortElement.js'
+        'js/sortElement.js',
+        'js/private_mess_cload.js'
     ];
 
     public $css = [
@@ -22,7 +22,8 @@ class CloadAsset extends BaseMessageAssets {
 
     public $depends = [
         'vision\messages\assets\PrivateMessPoolingAsset',
-        'vision\messages\assets\TinyscrollbarAsset'
+        'vision\messages\assets\TinyscrollbarAsset',
+        'SortElementsAsset'
     ];
 
 }
