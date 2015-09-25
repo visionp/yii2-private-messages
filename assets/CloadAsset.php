@@ -13,6 +13,7 @@ class CloadAsset extends BaseMessageAssets {
 
     public $js = [
         'js/private_mess_cload.js',
+        'js/sortElement.js'
     ];
 
     public $css = [
