@@ -11,7 +11,7 @@ namespace vision\messages\assets;
 
 class SortElementsAsset extends BaseMessageAssets {
     public $js = [
-        'js/sortElement.js'
+        'js/sortElements.js'
     ];
 
 
