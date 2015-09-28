@@ -41,7 +41,7 @@ class CloadMessage extends PrivateMessageWidget {
 
             $html .= '<button class="delete-friend">&times;</button>';
 
-            $html .= '<span class="counter-message" style="' . ($usr['cnt_mess'] > 0 ? 'block' : 'none') . '">';
+            $html .= '<span class="counter-message" style="display:' . ($usr['cnt_mess'] > 0 ? 'block' : 'none') . '">';
             if($usr['cnt_mess']){
                 $html .=  $usr['cnt_mess'];
             }
