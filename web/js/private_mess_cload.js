@@ -153,7 +153,6 @@ var visiPrivateMessages = (function() {
             } else {
                 counter.hide();
             }
-            self.sortList();
             return self;
         };
 
