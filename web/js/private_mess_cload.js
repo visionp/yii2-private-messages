@@ -29,6 +29,7 @@ var visiPrivateMessages = (function() {
             self.inputText   = self.form.find('[name="input_message"]');
             self.inputFromId = self.form.find('[name="message_id_user"]');
             self.inputIsEmail = self.form.find('[name="send_mail"]');
+            self.listBox = self.mainBox.find('.list_users div.overview');
             self.lastId = 1;
         };
 
@@ -143,10 +144,12 @@ var visiPrivateMessages = (function() {
 
         //Установить кол-во новых сообщений в списке пользователей
         this.setCountMessToList = function(user_id, count) {
-            var counter = self.mainBox.find('div.contact[data-user=' + user_id + '] span.counter-message').eq(0);
+            var contact = self.mainBox.find('div.contact[data-user=' + user_id + ']');
+            var counter = contact.find('span.counter-message').eq(0);
             counter.html(count);
             if(count > 0){
                 counter.show();
+                self.moveToTop(contact);
             } else {
                 counter.hide();
             }
@@ -155,15 +158,18 @@ var visiPrivateMessages = (function() {
         };
 
 
+        //перемещаем контактное лицо в топ списка
+        this.moveToTop = function(contact) {
+            contact.prependTo(self.listBox);
+        }
+
         //сортировка контактов
         this.sortList = function(){
-            /*
             self.mainBox.find('div.list_users div.overview div.contact').sortElements(function (a, b) {
                 var f = $(a).find('span.counter-message').html();
                 var s = $(b).find('span.counter-message').html();
                 return (f > s) ? -1 : (f < s) ? 1 : 0;
             });
-            */
         };
 
         this.deleteMessage = function(idMessage) {
