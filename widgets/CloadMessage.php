@@ -14,6 +14,9 @@ use yii\helpers\Html;
 
 class CloadMessage extends PrivateMessageWidget {
 
+    public $headLabel = 'Message';
+
+
     public function run(){
         $this->assetJS();
         $this->html = '<div id="' . $this->uniq_id . '" class="main-message-container message-layout clearfix">';
@@ -50,7 +53,6 @@ class CloadMessage extends PrivateMessageWidget {
             if($img) {
                 $html .= '<div class="friends-block">';
                 $html .=  $img;
-
                 $html .= '</div>';
             }
 
@@ -59,7 +61,6 @@ class CloadMessage extends PrivateMessageWidget {
             $html .= array_reduce($names, function($pre, $val) {
                 return $pre . "<div>$val</div>";
             });
-            //if($usr['cnt_mess']){}
             $html .= "</div></div>";
         }
 
@@ -90,11 +91,12 @@ class CloadMessage extends PrivateMessageWidget {
         return $html;
     }
 
+
     protected function getHead() {
         $html = '<div class="right-layout">';
         $html .= '<div class="separate"></div>';
         $html .= '<div class="layout-background clearfix">';
-        $html .= '<div class="dialogue">Message</div>';
+        $html .= '<div class="dialogue">' . $this->headLabel . '</div>';
         $html .= '<div class="message-layout-search">';
         $html .= '<form><div class="search">';
         $html .= '<input type="search">';
@@ -108,5 +110,6 @@ class CloadMessage extends PrivateMessageWidget {
         CloadAsset::register($this->view);
         $this->addJs();
     }
+
 
 }
