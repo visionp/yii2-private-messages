@@ -115,9 +115,10 @@ class MessageApiAction extends Action {
 
 
     protected function sendJson($data) {
-        header('Content-Type: application/json');
-        echo json_encode($data);
-        flush();
+        $response = \Yii::$app->response;
+        $response->format = \yii\web\Response::FORMAT_JSON;
+        $response->data = $data;
+        $response->send();
         die();
     }
 
