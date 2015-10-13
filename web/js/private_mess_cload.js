@@ -270,7 +270,7 @@ var visiPrivateMessages = (function() {
 
         //resize tinyscrollbar
         this.Scroll = function() {
-            scrollbar1.data("plugin_tinyscrollbar").update('bottom');
+            this.scrollbar1.data("plugin_tinyscrollbar").update('bottom');
         };
 
 
@@ -287,7 +287,7 @@ var visiPrivateMessages = (function() {
                     target.hide();
                 }
             });
-            scrollbar3.data("plugin_tinyscrollbar").update();
+            this.scrollbar3.data("plugin_tinyscrollbar").update();
         });
 
         di[id_block] = this;
@@ -296,9 +296,9 @@ var visiPrivateMessages = (function() {
         this.pools.addListener('newData', this.fromPooling);
         this.pools.start();
 
-        var scrollbar1 = $('#scrollbar1');
-        scrollbar1.tinyscrollbar();
-        var scrollbar3 = $('#scrollbar3').tinyscrollbar();
+        this.scrollbar1 = $('#scrollbar1');
+        this.scrollbar1.tinyscrollbar();
+        this.scrollbar3 = $('#scrollbar3').tinyscrollbar();
 
     }
 })();
