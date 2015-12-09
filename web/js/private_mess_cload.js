@@ -11,7 +11,7 @@ var visiPrivateMessages = (function() {
         var host = pathArray[2];
         var url = protocol + '//' + host + '/' + baseUrlPrivateMessage  + '/private-messages';
         return url;
-    };
+    }
 
     return function(id_block_) {
         var id_block = typeof id_block_ != "undefined" ? id_block_ : '#message-container';
@@ -254,7 +254,7 @@ var visiPrivateMessages = (function() {
                 });
             }
             return false;
-        })
+        });
 
         //обработка кликов на контакты
         this.mainBox.find('.contact').click(function(event){

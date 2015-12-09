@@ -12,7 +12,7 @@ use Yii;
 use yii\base\Component;
 use yii\helpers\Html;
 use vision\messages\models\Messages;
-use vision\messages\exceptions\EceptionMessages;
+use vision\messages\exceptions\ExceptionMessages;
 use vision\messages\events\MessageEvent;
 use yii\base\InvalidConfigException;
 
@@ -141,7 +141,7 @@ class MyMessages extends Component {
     /**
      * Method to getMyMessages.
      *
-     * @throws EceptionMessages
+     * @throws ExceptionMessages
      * @return array
      */
     public function getMyMessages() {
@@ -161,7 +161,7 @@ class MyMessages extends Component {
      * @param $whom_id
      * @param $from_id
      *
-     * @throws EceptionMessages
+     * @throws ExceptionMessages
      * @return array
      */
     public function getAllMessages($whom_id, $from_id) {
@@ -237,16 +237,16 @@ class MyMessages extends Component {
      * @param $whom_id
      * @param $message
      *
-     * @throws EceptionMessages
+     * @throws ExceptionMessages
      *
      * @return boolean, array
      */
     protected function _sendEmail($whom_id, $message) {
         if(!is_callable($this->getEmail)) {
-            throw new EceptionMessages('Email not send. Set in config "getEmail" to callable func.');
+            throw new ExceptionMessages('Email not send. Set in config "getEmail" to callable func.');
         }
         if(!isset($this->templateEmail['html'], $this->templateEmail['text'])) {
-            throw new EceptionMessages('Email not send. Set in config "templateEmail".');
+            throw new ExceptionMessages('Email not send. Set in config "templateEmail".');
         }
         $user = $this->getUser($whom_id);
         if($user) {
@@ -292,7 +292,7 @@ class MyMessages extends Component {
      * @param $whom_id
      * @param $from_id
      *
-     * @throws EceptionMessages
+     * @throws ExceptionMessages
      * @return array
      */
     protected function _getNewMessages($whom_id, $from_id) {
@@ -306,7 +306,7 @@ class MyMessages extends Component {
      * @param $id
      * @param $status
      *
-     * @throws EceptionMessages
+     * @throws ExceptionMessages
      * @return array
      */
     protected function changeStatusMessage($id, $status, $is_delete = false) {
@@ -314,10 +314,10 @@ class MyMessages extends Component {
         $status_name = 'status';
         $current_user_id = $this->getIdCurrentUser();
         if(!$model) {
-            throw new EceptionMessages('Message not found.');
+            throw new ExceptionMessages('Message not found.');
         }
         if($model->from_id != $current_user_id && $model->whom_id != $current_user_id) {
-            throw new EceptionMessages('Message not found for this user.');
+            throw new ExceptionMessages('Message not found for this user.');
         }
         if($is_delete) {
             switch ($current_user_id) {
@@ -339,7 +339,7 @@ class MyMessages extends Component {
      *
      * @param $id
      *
-     * @throws EceptionMessages
+     * @throws ExceptionMessages
      * @return Messages
      */
     public function deleteMessage($id) {
@@ -350,7 +350,7 @@ class MyMessages extends Component {
     /**
      * Method to getUser.
      *
-     * @throws EceptionMessages
+     * @throws ExceptionMessages
      * @return array
      */
     public function getUser($id) {
@@ -363,7 +363,7 @@ class MyMessages extends Component {
     /**
      * Method to getAllUsers.
      *
-     * @throws EceptionMessages
+     * @throws ExceptionMessages
      * @return array
      */
     public function getAllUsers() {
@@ -397,13 +397,13 @@ class MyMessages extends Component {
      * @param $model
      * @param $name_event
      *
-     * @throws EceptionMessages
+     * @throws ExceptionMessages
      * @return array
      */
     protected function saveData($model, $name_event = null) {
         if(!$model->save()) {
             $mess = $model->hasErrors() ? implode(', ', $model->getFirstErrors()) : 'Not saved. ' . $name_event;
-            throw new EceptionMessages($mess);
+            throw new ExceptionMessages($mess);
         } else {
             if($name_event) {
                 $event = new MessageEvent;
@@ -422,7 +422,7 @@ class MyMessages extends Component {
      * @param $from_id
      * @param $type
      *
-     * @throws EceptionMessages
+     * @throws ExceptionMessages
      * @return array
      */
     protected function getMessages($whom_id, $from_id = null, $type = null, $last_id = null) {
@@ -534,7 +534,7 @@ class MyMessages extends Component {
         $return = array_unique($this->adminIds);
         $return = array_filter($return);
         if(empty($return) || !count($return)){
-            throw new EceptionMessages('Not found admins.');
+            throw new ExceptionMessages('Not found admins.');
         }
         $this->adminIds = $return;
 

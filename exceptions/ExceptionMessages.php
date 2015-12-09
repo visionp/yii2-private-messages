@@ -10,6 +10,6 @@ namespace vision\messages\exceptions;
 
 use \yii\base\UserException;
 
-class EceptionMessages extends  UserException {
+class ExceptionMessages extends  UserException {
 
 } 

@@ -10,7 +10,7 @@ namespace vision\messages\actions;
 
 use Yii;
 use yii\base\Action;
-use vision\messages\exceptions\EceptionMessages;
+use vision\messages\exceptions\ExceptionMessages;
 
 
 
@@ -30,7 +30,7 @@ class MessageApiAction extends Action {
         }
         try{
             $data['data'] = call_user_func([$this, $this->action]);
-        }catch (EceptionMessages $e) {
+        }catch (ExceptionMessages $e) {
             $this->sendJson(['status' => false, 'message' => $e->getMessage()]);
         }
         $data['status'] = true;
