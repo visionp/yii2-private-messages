@@ -13,7 +13,7 @@ use yii\web\AssetBundle;
 
 class TinyscrollbarAsset extends AssetBundle
 {
-    public $sourcePath = '@bower/TinyScrollbar';
+    public $sourcePath = '@bower/tinyscrollbar';
 
     public $js = [
         'lib/jquery.tinyscrollbar.js'
