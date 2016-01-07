@@ -8,15 +8,12 @@
 
 namespace vision\messages\assets;
 
-use yii\web\AssetBundle;
 
 
-class TinyscrollbarAsset extends AssetBundle
+class TinyscrollbarAsset extends BaseMessageAssets
 {
-    public $sourcePath = '@bower/tinyscrollbar';
-
     public $js = [
-        'lib/jquery.tinyscrollbar.js'
+        'js/jquery.tinyscrollbar.min.js'
     ];
     public $depends = [
         'yii\web\JqueryAsset'
