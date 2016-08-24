@@ -79,7 +79,7 @@ class MyMessages extends Component {
 
         if(!is_numeric($whom_id) && is_string($whom_id)){
             $ids = $this->getUsersByRoles($whom_id);
-            return $this->sendMessage($ids, $message, $send_email);
+            return $this->sendMessage($ids, $message, $sendEmail);
         }
         if(is_array($whom_id)) {
             $result = $this->_sendMessages($whom_id, $message, $sendEmail);
