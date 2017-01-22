@@ -10,9 +10,8 @@ var privateMessPooling = (function() {
         var pathArray = location.href.split( '/' );
         var protocol = pathArray[0];
         var host = pathArray[2];
-        var url = protocol + '//' + host + '/' + baseUrlPrivateMessage  + '/private-messages';
-        return url;
-    };
+        return protocol + '//' + host + '/' + baseUrlPrivateMessage  + '/private-messages';
+    }
 
     return function(max_id) {
         if(di != false) {

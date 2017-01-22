@@ -680,11 +680,12 @@
     outline: none;
 }
 .search input[type="submit"]{
-    background-image: url('img/icon-search.png');
-    width: 14px;
-    height: 14px;
     background-repeat: no-repeat;
-    vertical-align: middle;
+    background-position-y: 3px;
+    width: 14px;
+    height: 20px;
+    background-image: url(img/icon-search.png);
+    vertical-align: top;
 }
 .search{
     background-color: #4996ac;

@@ -22,13 +22,13 @@ http://prntscr.com/7dt6tf
 Выполните
 
 ```
-php composer.phar require --prefer-dist vision/yii2-private-messages "^2"
+php composer.phar require --prefer-dist vision/yii2-private-messages "dev-master"
 ```
 
 или добавьте в ваш composer.json
 
 ```
-"vision/yii2-private-messages": "^2"
+"vision/yii2-private-messages": "dev-master"
 ```
 
 Использование

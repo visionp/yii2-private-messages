@@ -9,7 +9,7 @@ var visiPrivateMessages = (function() {
         var pathArray = location.href.split( '/' );
         var protocol = pathArray[0];
         var host = pathArray[2];
-        return protocol + '//' + host + '/' + baseUrlPrivateMessage  + '/private-messages';;
+        return protocol + '//' + host + '/' + baseUrlPrivateMessage  + '/private-messages';
     }
 
     return function(id_block_) {
@@ -66,7 +66,7 @@ var visiPrivateMessages = (function() {
                         self.updateBox(msg.data);
                         self.inputText.val('');
                     } else {
-                        self.log('error: ' + 'sendMessage');
+                        self.log('error: sendMessage');
                         self.log(msg);
                     }
                 }
@@ -131,12 +131,13 @@ var visiPrivateMessages = (function() {
         //обработка событий обновления данных pool
         this.fromPooling = function(m) {
             var current_id = self.inputFromId.val();
-            for(var k in m){
-                var arr = m[k];
-                self.setCountMessToList(arr['id'], arr['cnt_mess']);
-                if(arr['id'] == current_id) {
-                    self.getNewMessages();
-                }
+            if(m.data){
+                m.data.forEach(function(item, i, arr) {
+                    self.setCountMessToList(item['id'], item['cnt_mess']);
+                    if(item['id'] == current_id) {
+                        self.getNewMessages();
+                    }
+                });
             }
             return self;
         };

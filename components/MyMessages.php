@@ -8,7 +8,7 @@
 
 namespace vision\messages\components;
 
-use yii;
+use Yii;
 use yii\base\Component;
 use yii\db\ActiveRecord;
 use yii\db\Query;

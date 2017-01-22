@@ -33,6 +33,7 @@ class Messages extends \yii\db\ActiveRecord
         return '{{%messages}}';
     }
 
+
     /**
      * @inheritdoc
      */
@@ -42,6 +43,7 @@ class Messages extends \yii\db\ActiveRecord
             TimestampBehavior::className()
         ];
     }
+
 
     /**
      * @inheritdoc
@@ -56,6 +58,7 @@ class Messages extends \yii\db\ActiveRecord
             ['status', 'in', 'range' => [self::STATUS_NEW, self::STATUS_READ], 'message' => 'Incorrect status'],
         ];
     }
+
 
     /**
      * @inheritdoc
