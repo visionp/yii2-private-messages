@@ -10,73 +10,117 @@ namespace vision\messages\actions;
 
 use Yii;
 use yii\base\Action;
+use vision\messages\components\MyMessages;
 use vision\messages\exceptions\ExceptionMessages;
-
 
 
 class MessageApiAction extends Action {
 
+
     protected $from_id;
     protected $last_id;
     protected $action;
+    protected $whom_id;
+    protected $isEmail;
+    protected $message;
 
+
+    /**
+     *
+     */
+    public function init()
+    {
+        $request = \Yii::$app->request;
+        $this->action  = $request->get('action', 'undefined');
+        $this->whom_id = $request->get('whom_id', false);
+        $this->isEmail = $request->get('isEmail', false);
+        $this->message = $request->get('text', false);
+        $this->from_id = $request->get('from_id', false);
+    }
+
+
+    /**
+     * 
+     */
     public function run() {
-        $this->action = \Yii::$app->request->get('action', false);
-        if(!$this->action) {
-            $this->sendJson(['status' => false, 'message' => 'Action is null.']);
+        $response = ['status' => false];
+        try {
+            if(method_exists($this, $this->action)) {
+                $response['data'] = call_user_func([$this, $this->action]);
+                $response['status'] = true;
+            } else {
+                $response = ['message' => 'Action is not exist.'];
+            }
+
+        } catch (ExceptionMessages $e) {
+            $response = [
+                'status' => false,
+                'message' => $e->getMessage()
+            ];
         }
-        if(!method_exists($this, $this->action)) {
-            $this->sendJson(['status' => false, 'message' => 'Action not exist.']);
-        }
-        try{
-            $data['data'] = call_user_func([$this, $this->action]);
-        }catch (ExceptionMessages $e) {
-            $this->sendJson(['status' => false, 'message' => $e->getMessage()]);
-        }
-        $data['status'] = true;
-        $this->sendJson($data);
+        return $this->toJson($response);
     }
 
 
+    /**
+     * @return mixed
+     */
     protected function getMessage() {
-        $from_id = \Yii::$app->request->get('from_id', false);
-        $data['messages'] = \Yii::$app->mymessages->getAllMessages(\Yii::$app->user->identity->id, $from_id);
-        $data['from_id'] = $from_id;
+        $data['messages'] = $this
+            ->getMessageComponent()
+            ->getAllMessages(\Yii::$app->user->getId(), $this->from_id);
+        $data['from_id'] = $this->from_id;
         return $data;
     }
 
 
+    /**
+     * @return mixed
+     */
     protected function getNewMessage() {
-        $from_id = \Yii::$app->request->get('from_id', false);
-        $data['messages'] = \Yii::$app->mymessages->getNewMessages(\Yii::$app->user->identity->id, $from_id);
-        $data['from_id'] = $from_id;
+        $data['messages'] = $this
+            ->getMessageComponent()
+            ->getNewMessages($this->getMyId(), $this->from_id);
+        $data['from_id'] = $this->from_id;
         return $data;
     }
 
 
+    /**
+     *
+     */
     protected function sendMessage() {
-        $whom_id = \Yii::$app->request->get('whom_id', false);
-        $isEmail = \Yii::$app->request->get('isEmail', false);
-        $message = \Yii::$app->request->get('text', false);
-
-        if(!$whom_id && !$message) {
-            $this->sendJson(['status' => false, 'message' => 'No data.']);
+        if(!$this->whom_id && !$this->message) {
+            return ['status' => false, 'message' => 'No data.'];
         }
 
-        \Yii::$app->mymessages->sendMessage($whom_id, $message, $isEmail == 'true');
-        $data['messages'] = \Yii::$app->mymessages->getNewMessages(\Yii::$app->user->identity->id, $whom_id);
-        $data['from_id'] = $whom_id;
+        $this->getMessageComponent()->sendMessage($this->whom_id, $this->message, $this->isEmail == 'true');
+        $data['messages'] = $this
+            ->getMessageComponent()
+            ->getNewMessages($this->getMyId(), $this->whom_id);
+
+        $data['from_id'] = $this->whom_id;
         return $data;
     }
 
 
+    /**
+     * @return mixed
+     */
     protected function deleteMessage() {
         $id_message = \Yii::$app->request->get('id_message', false);
-        $result = \Yii::$app->mymessages->deleteMessage($id_message);
+        $result = [];
+        if($id_message){
+            $result = $this->getMessageComponent()->deleteMessage($id_message);
+            return $result['id'];
+        }
         return $result['id'];
     }
 
 
+    /**
+     * @return bool
+     */
     protected function clearMessage() {
         $return = false;
         $user_id = \Yii::$app->request->get('user_id', false);
@@ -87,39 +131,43 @@ class MessageApiAction extends Action {
     }
 
 
+    /**
+     * Pooling new messages
+     */
     protected function pooling() {
         $last_id = \Yii::$app->request->get('last_id', false);
         $data    = \Yii::$app->mymessages->checkMessage($last_id);
-        $this->sendJson($data);
-        /*
-        if(!$last_id) {
-            sleep(2);
-            $this->sendJson(['status' => false, 'message' => 'No last id, info:' . print_r($last_id, 1)]);
-        }
-        $time_cancel = (int) ini_get('max_execution_time') - 1;
-        $duration = $time_cancel < 30 ? $time_cancel : 25;
-        $endTime = time() + $duration; $i=0;
-        while(time() < $endTime){
-            $i++;
-            if($i > 4) {
-                $this->sendJson('dddd');
-            }
-            $data = \Yii::$app->mymessages->checkMessage($last_id);
-            if (count($data) > 0) {
-                $this->sendJson($data);
-            }
-            sleep(7);
-        }
-        */
+        return $data;
     }
 
 
-    protected function sendJson($data) {
+    /**
+     * @param $data
+     * @return \yii\console\Response|\yii\web\Response
+     */
+    protected function toJson($data) {
         $response = \Yii::$app->response;
-        $response->format = \yii\web\Response::FORMAT_JSON;
+        $response->format = $response::FORMAT_JSON;
         $response->data = $data;
-        $response->send();
-        die();
+        return $response;
+    }
+
+
+    /**
+     * @return int|string
+     */
+    protected function getMyId()
+    {
+        return \Yii::$app->user->getId();
+    }
+
+
+    /**
+     * @return MyMessages
+     */
+    protected function getMessageComponent()
+    {
+        return \Yii::$app->mymessages;
     }
 
 }

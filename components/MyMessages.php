@@ -8,8 +8,10 @@
 
 namespace vision\messages\components;
 
-use Yii;
+use yii;
 use yii\base\Component;
+use yii\db\ActiveRecord;
+use yii\db\Query;
 use yii\helpers\Html;
 use vision\messages\models\Messages;
 use vision\messages\exceptions\ExceptionMessages;
@@ -41,10 +43,10 @@ class MyMessages extends Component {
     /** @var boolean */
     public $isSystem = false;
 
-    /** @var function */
+    /** @var callable */
     public $getEmail = null;
 
-    /** @var function */
+    /** @var callable */
     public $getLogo = null;
 
     /** @var array */
@@ -68,6 +70,12 @@ class MyMessages extends Component {
     }
 
 
+    /**
+     * @param $whom_id
+     * @param $message
+     * @param bool $sendEmail
+     * @return array|null
+     */
     public function sendMessage($whom_id, $message, $sendEmail = false) {
         $result = null;
 
@@ -77,11 +85,10 @@ class MyMessages extends Component {
             }
         }
 
-        if(!is_numeric($whom_id) && is_string($whom_id)){
+        if(!is_numeric($whom_id) && is_string($whom_id)) {
             $ids = $this->getUsersByRoles($whom_id);
             return $this->sendMessage($ids, $message, $sendEmail);
-        }
-        if(is_array($whom_id)) {
+        } elseif (is_array($whom_id)) {
             $result = $this->_sendMessages($whom_id, $message, $sendEmail);
         } else {
             $result = $this->_sendMessage($whom_id, $message, $sendEmail);
@@ -96,9 +103,11 @@ class MyMessages extends Component {
         $this->isSystem = false;
     }
 
+
     public function getSystemListNew() {
         return $this->_getSystemMess(\Yii::$app->user->id, true);
     }
+
 
     public function getSystemMess() {
         $id = \Yii::$app->user->id;
@@ -109,17 +118,23 @@ class MyMessages extends Component {
         return $message;
     }
 
+
+    /**
+     * @param $user_id
+     * @param bool $only_new
+     * @return array
+     */
     protected function _getSystemMess($user_id, $only_new = false) {
         $messages = new \yii\db\Query();
         $messages
             ->select([
                 'usr.id',
-                "usr.$this->attributeNameUser",
+                "usr.{$this->attributeNameUser}",
                 'usr.email',
                 'm.message',
                 'FROM_UNIXTIME(m.created_at, "%d-%m-%Y %H:%i") as created_at'
             ])
-            ->from("$this->userTableName as usr")
+            ->from("{$this->userTableName} as usr")
             ->leftJoin('messages as m', 'usr.id = m.whom_id')
             ->where([
                 'm.from_id' => null,
@@ -133,10 +148,22 @@ class MyMessages extends Component {
         return $messages->all();
     }
 
+
+    /**
+     * @param $user_id
+     * @return int
+     */
     protected function _toReadSystemMessage($user_id) {
-        $count = Messages::updateAll(['status' => Messages::STATUS_READ], ['whom_id' => $user_id, 'from_id' => null]);
+        $count = Messages::updateAll(
+            ['status' => Messages::STATUS_READ],
+            [
+                'whom_id' => $user_id,
+                'from_id' => null
+            ]
+        );
         return $count;
     }
+
 
     /**
      * Method to getMyMessages.
@@ -150,6 +177,9 @@ class MyMessages extends Component {
     }
 
 
+    /**
+     * @return array
+     */
     public function checkMessage(){
         $result = $this->getAllUsers();
         return array_filter($result, function($arr) { return $arr['cnt_mess'] > 0 ;});
@@ -169,11 +199,20 @@ class MyMessages extends Component {
     }
 
 
+    /**
+     * @param $whom_id
+     * @param $from_id
+     * @return array
+     */
     public function getNewMessages($whom_id, $from_id) {
         return $this->getMessages($whom_id, $from_id, 1);
     }
 
 
+    /**
+     * @param $user_id
+     * @return bool|string
+     */
     public function createLogo($user_id) {
         $img = '<img src="">';
         if(is_callable($this->getLogo)){
@@ -301,13 +340,11 @@ class MyMessages extends Component {
 
 
     /**
-     * Method to changeStatusMessage.
-     *
      * @param $id
      * @param $status
-     *
-     * @throws ExceptionMessages
+     * @param bool $is_delete
      * @return array
+     * @throws ExceptionMessages
      */
     protected function changeStatusMessage($id, $status, $is_delete = false) {
         $model = Messages::findOne($id);
@@ -394,7 +431,7 @@ class MyMessages extends Component {
     /**
      * Method to saveData.
      *
-     * @param $model
+     * @param $model Messages
      * @param $name_event
      *
      * @throws ExceptionMessages
@@ -420,6 +457,7 @@ class MyMessages extends Component {
      *
      * @param $whom_id
      * @param $from_id
+     * @param $last_id
      * @param $type
      *
      * @throws ExceptionMessages
@@ -429,12 +467,21 @@ class MyMessages extends Component {
         $table_name = Messages::tableName();
         $my_id = $this->getIdCurrentUser();
 
-        $query = new \yii\db\Query();
+        $query = new Query();
         $query
-            ->select(['FROM_UNIXTIME(msg.created_at, "%d-%m-%Y %H:%i:%S") as created_at', 'msg.id', 'msg.status', 'msg.message', "usr1.id as from_id", "usr1.$this->attributeNameUser as from_name", "usr2.id as whom_id", "usr2.$this->attributeNameUser as whom_name"])
-            ->from("$table_name as msg")
-            ->leftJoin("$this->userTableName as usr1", 'usr1.id = msg.from_id')
-            ->leftJoin("$this->userTableName as usr2", 'usr2.id = msg.whom_id');
+            ->select([
+                'msg.created_at',
+                'msg.id',
+                'msg.status',
+                'msg.message',
+                'usr1.id as from_id',
+                'from_name' => "usr1.{$this->attributeNameUser}",
+                'whom_id' => 'usr2.id',
+                'whom_name' => "usr2.{$this->attributeNameUser}"
+            ])
+            ->from("{$table_name} as msg")
+            ->leftJoin("{$this->userTableName} as usr1", 'usr1.id = msg.from_id')
+            ->leftJoin("{$this->userTableName} as usr2", 'usr2.id = msg.whom_id');
 
 
         if($from_id) {
@@ -480,17 +527,27 @@ class MyMessages extends Component {
         }
 
         $user_id = $this->getIdCurrentUser();
-        return array_map(function ($r) use ($user_id) { $r['i_am_sender'] = $r['from_id'] == $user_id; return $r;}, $return);
+        return array_map(function ($r) use ($user_id) {
+            $r['i_am_sender'] = $r['from_id'] == $user_id;
+            $r['created_at'] = \DateTime::createFromFormat('U', $r['created_at'])->format('d-m-Y H-i-s');
+            return $r;
+        },
+            $return
+        );
     }
 
 
+    /**
+     * @param $role
+     * @return array
+     */
     protected function getUsersByRoles($role) {
         $users = new \yii\db\Query();
         $result = $users
             ->select([
                 'usr.id'
             ])
-            ->from("$this->userTableName as usr")
+            ->from("{$this->userTableName} as usr")
             ->leftJoin('auth_assignment as ath', 'usr.id = ath.user_id')
             ->where(['ath.item_name' => $role])
             ->all();
@@ -499,6 +556,9 @@ class MyMessages extends Component {
     }
 
 
+    /**
+     * @return int|null|string
+     */
     protected function getIdCurrentUser() {
         return \Yii::$app->user->isGuest || $this->isSystem ? null : \Yii::$app->user->id;
     }
@@ -507,7 +567,8 @@ class MyMessages extends Component {
     /**
      * Method to getAdminIds.
      *
-     * @return array | null
+     * @return array|null
+     * @throws ExceptionMessages
      */
     protected function getAdminIds() {
         if(!empty($this->adminIds)){
@@ -539,6 +600,23 @@ class MyMessages extends Component {
         $this->adminIds = $return;
 
         return $this->adminIds;
+    }
+
+
+    /**
+     * Find message by id
+     *
+     * @param $id
+     * @return Messages
+     * @throws ExceptionMessages
+     */
+    protected function findMessage($id)
+    {
+        $model = Messages::findOne($id);
+        if(!$model){
+            throw new ExceptionMessages('Not found message');
+        }
+        return $model;
     }
 
 

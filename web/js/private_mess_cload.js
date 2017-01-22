@@ -9,8 +9,7 @@ var visiPrivateMessages = (function() {
         var pathArray = location.href.split( '/' );
         var protocol = pathArray[0];
         var host = pathArray[2];
-        var url = protocol + '//' + host + '/' + baseUrlPrivateMessage  + '/private-messages';
-        return url;
+        return protocol + '//' + host + '/' + baseUrlPrivateMessage  + '/private-messages';;
     }
 
     return function(id_block_) {
@@ -160,7 +159,7 @@ var visiPrivateMessages = (function() {
         //перемещаем контактное лицо в топ списка
         this.moveToTop = function(contact) {
             contact.prependTo(self.listBox);
-        }
+        };
 
         //сортировка контактов
         this.sortList = function(){
@@ -287,7 +286,7 @@ var visiPrivateMessages = (function() {
                     target.hide();
                 }
             });
-            this.scrollbar3.data("plugin_tinyscrollbar").update();
+            self.scrollbar3.data("plugin_tinyscrollbar").update();
         });
 
         di[id_block] = this;
