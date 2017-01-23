@@ -11,7 +11,9 @@ namespace vision\messages\components;
 use Yii;
 use yii\base\Component;
 use yii\db\ActiveRecord;
+use yii\db\Expression;
 use yii\db\Query;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use vision\messages\models\Messages;
 use vision\messages\exceptions\ExceptionMessages;
@@ -60,6 +62,12 @@ class MyMessages extends Component {
 
     /** @var array */
     protected $adminIds = null;
+
+
+    public static function getMessageComponent()
+    {
+        return \Yii::$app->mymessages;
+    }
 
 
     public function init(){
@@ -125,17 +133,16 @@ class MyMessages extends Component {
      * @return array
      */
     protected function _getSystemMess($user_id, $only_new = false) {
-        $messages = new \yii\db\Query();
-        $messages
+        $messages = (new Query())
             ->select([
                 'usr.id',
-                "usr.{$this->attributeNameUser}",
+                'usr' => $this->attributeNameUser,
                 'usr.email',
                 'm.message',
-                'FROM_UNIXTIME(m.created_at, "%d-%m-%Y %H:%i") as created_at'
+                'm.created_at'
             ])
-            ->from("{$this->userTableName} as usr")
-            ->leftJoin('messages as m', 'usr.id = m.whom_id')
+            ->from(['usr' => $this->userTableName])
+            ->leftJoin(['m' => Messages::tableName()], 'usr.id = m.whom_id')
             ->where([
                 'm.from_id' => null,
                 'usr.id'=> $user_id
@@ -145,7 +152,13 @@ class MyMessages extends Component {
             $messages->andWhere(['m.status' => 1]);
         }
 
-        return $messages->all();
+
+        return array_map(function ($item){
+            $item['created_at'] = \DateTime::createFromFormat('U', $item['created_at'])->format('d-m-Y H-i-s');
+            return $item;
+        },
+            $messages->all()
+        );
     }
 
 
@@ -178,12 +191,14 @@ class MyMessages extends Component {
 
 
     /**
+     * @param bool $last_id
      * @return array
      */
-    public function checkMessage(){
+    public function checkMessage($last_id = false){
         $result = $this->getAllUsers();
         return array_filter($result, function($arr) { return $arr['cnt_mess'] > 0 ;});
     }
+
 
     /**
      * Method to getAllMessages.
@@ -210,18 +225,15 @@ class MyMessages extends Component {
 
 
     /**
-     * @param $user_id
+     * @param $userId
      * @return bool|string
      */
-    public function createLogo($user_id) {
+    public function createLogo($userId) {
         $img = '<img src="">';
         if(is_callable($this->getLogo)){
-            $path_image = call_user_func($this->getLogo, $user_id);
-            if(!$path_image) {
-                return false;
-            }
-            if($path_image) {
-                $img = Html::img($path_image, ['width' => 40]);
+            $pathImage = call_user_func($this->getLogo, $userId);
+            if($pathImage) {
+                $img = Html::img($pathImage, ['width' => 40]);
             }
         } else {
             return false;
@@ -230,16 +242,20 @@ class MyMessages extends Component {
     }
 
 
+    /**
+     * @param $from_id
+     * @return int
+     */
     public function clearMessages($from_id) {
         $params = [':whom_user_id' => $from_id, ':from_user_id' => \Yii::$app->user->id];
-        $result = \Yii::$app->db->createCommand()
+        $result = $this->getDb()->createCommand()
             ->update(Messages::tableName(), ['is_delete_from' => 1],
                 'from_id = :from_user_id AND whom_id = :whom_user_id',
                 $params)
             ->execute();
 
         if($result) {
-            $result += \Yii::$app->db->createCommand()
+            $result += $this->getDb()->createCommand()
                 ->update(Messages::tableName(), ['is_delete_whom' => 1],
                     'from_id = :whom_user_id AND whom_id = :from_user_id',
                     $params)
@@ -255,20 +271,21 @@ class MyMessages extends Component {
      *
      * @param $whom_id
      * @param $message
-     *
+     * @param bool $send_email
      * @return array
      */
     protected function _sendMessage($whom_id, $message, $send_email = false) {
         $model = new Messages();
         $model->from_id = $this->getIdCurrentUser();
         $model->whom_id = $whom_id;
-        $model->message = \yii\helpers\Html::encode($message);
+        $model->message = Html::encode($message);
         if($this->enableEmail && $send_email) {
             $this->_sendEmail($whom_id, $message);
         }
 
         return $this->saveData($model, self::EVENT_SEND);
     }
+
 
     /**
      * Method to _sendEmail.
@@ -302,21 +319,16 @@ class MyMessages extends Component {
         return false;
     }
 
-    /*
-    public $getEmail = null;
-    public $templateEmail = [];
-     */
-
 
     /**
      * Method to many messages.
      *
-     * @param $whom_ids
+     * @param array $whom_ids
      * @param $message
-     *
+     * @param bool $sendEmail
      * @return array
      */
-    protected function _sendMessages(Array $whom_ids, $message, $sendEmail = false) {
+    protected function _sendMessages(array $whom_ids, $message, $sendEmail = false) {
         $result = [];
         foreach($whom_ids as $id) {
             $result[] = $this->_sendMessage($id, $message, $sendEmail);
@@ -348,11 +360,13 @@ class MyMessages extends Component {
      */
     protected function changeStatusMessage($id, $status, $is_delete = false) {
         $model = Messages::findOne($id);
-        $status_name = 'status';
-        $current_user_id = $this->getIdCurrentUser();
+
         if(!$model) {
             throw new ExceptionMessages('Message not found.');
         }
+        $status_name = 'status';
+        $current_user_id = $this->getIdCurrentUser();
+
         if($model->from_id != $current_user_id && $model->whom_id != $current_user_id) {
             throw new ExceptionMessages('Message not found for this user.');
         }
@@ -387,13 +401,12 @@ class MyMessages extends Component {
     /**
      * Method to getUser.
      *
-     * @throws ExceptionMessages
-     * @return array
+     * @param $id
+     * @return ActiveRecord
      */
     public function getUser($id) {
-        $model = new $this->modelUser();
-        $user = $model::findOne($id);
-        return $user;
+        $className = $this->modelUser;
+        return $className::findOne($id);
     }
 
 
@@ -406,25 +419,43 @@ class MyMessages extends Component {
     public function getAllUsers() {
         $table_name = Messages::tableName();
 
-        $sql = "select usr.id, usr.$this->attributeNameUser as $this->attributeNameUser, msg.cnt as cnt_mess ";
-        $sql .= "from $this->userTableName as usr ";
-        $sql .= "left join ";
-        $sql .= "(select from_id, count(id) as cnt from $table_name where status = 1 and whom_id = :user_id GROUP by from_id) as msg ON usr.id = msg.from_id ";
-        $sql .= " where usr.id != :user_id ";
+        $subQuery = (new Query())
+            ->select([
+                'from_id',
+                'cnt' => new Expression('count(id)')
+            ])
+            ->from($table_name)
+            ->where([
+                'status' => 1,
+                'whom_id' => $this->getIdCurrentUser()
+            ])
+            ->groupBy([
+                'from_id'
+            ]);
+
+        $query = (new Query())
+            ->select([
+                'usr.id',
+                $this->attributeNameUser => 'usr.' . $this->attributeNameUser,
+                'cnt_mess' => 'msg.cnt'
+            ])
+            ->from(['usr' => $this->userTableName])
+            ->leftJoin(['msg' => $subQuery], 'usr.id = msg.from_id')
+            ->where([
+                '!=', 'usr.id', $this->getIdCurrentUser()
+            ])
+            ->orderBy([
+                'msg.cnt' => SORT_DESC,
+                'usr.' . $this->attributeNameUser => SORT_DESC
+            ]);
 
         if($this->admins && !in_array(\Yii::$app->user->id, $this->getAdminIds())) {
-            $sql .= " AND usr.id IN (" . implode(',', $this->adminIds) . ") ";
+            $query->andWhere([
+                'in', 'usr.id', $this->adminIds
+            ]);
         }
 
-        $sql .= " Order by msg.cnt DESC, usr.$this->attributeNameUser ";
-
-        $connection = \Yii::$app->db;
-        $model = $connection->createCommand($sql);
-        $model->bindValue(':user_id', $this->getIdCurrentUser());
-
-        $users = $model->queryAll();
-
-        return $users;
+        return $query->all();
     }
 
 
@@ -443,7 +474,7 @@ class MyMessages extends Component {
             throw new ExceptionMessages($mess);
         } else {
             if($name_event) {
-                $event = new MessageEvent;
+                $event = new MessageEvent();
                 $event->message = $model;
                 $this->trigger(self::EVENT_SEND, $event);
             }
@@ -467,21 +498,20 @@ class MyMessages extends Component {
         $table_name = Messages::tableName();
         $my_id = $this->getIdCurrentUser();
 
-        $query = new Query();
-        $query
+        $query = (new Query())
             ->select([
                 'msg.created_at',
                 'msg.id',
                 'msg.status',
                 'msg.message',
-                'usr1.id as from_id',
+                'from_id'   => 'usr1.id',
                 'from_name' => "usr1.{$this->attributeNameUser}",
-                'whom_id' => 'usr2.id',
+                'whom_id'   => 'usr2.id',
                 'whom_name' => "usr2.{$this->attributeNameUser}"
             ])
-            ->from("{$table_name} as msg")
-            ->leftJoin("{$this->userTableName} as usr1", 'usr1.id = msg.from_id')
-            ->leftJoin("{$this->userTableName} as usr2", 'usr2.id = msg.whom_id');
+            ->from(['msg' => $table_name])
+            ->leftJoin(['usr1' => $this->userTableName], 'usr1.id = msg.from_id')
+            ->leftJoin(['usr2' => $this->userTableName], 'usr2.id = msg.whom_id');
 
 
         if($from_id) {
@@ -542,17 +572,14 @@ class MyMessages extends Component {
      * @return array
      */
     protected function getUsersByRoles($role) {
-        $users = new \yii\db\Query();
-        $result = $users
+        $query = (new Query())
             ->select([
                 'usr.id'
             ])
-            ->from("{$this->userTableName} as usr")
-            ->leftJoin('auth_assignment as ath', 'usr.id = ath.user_id')
-            ->where(['ath.item_name' => $role])
-            ->all();
-
-        return array_map(function($r) {return $r['id'];}, $result);
+            ->from([ 'usr' => $this->userTableName])
+            ->leftJoin(['ath' => 'auth_assignment'], 'usr.id = ath.user_id')
+            ->where(['ath.item_name' => $role]);
+        return ArrayHelper::getColumn($query->all(), 'id');
     }
 
 
@@ -571,14 +598,14 @@ class MyMessages extends Component {
      * @throws ExceptionMessages
      */
     protected function getAdminIds() {
-        if(!empty($this->adminIds)){
+        if (!empty($this->adminIds)){
             return $this->adminIds;
         }
-        if(empty($this->admins)) {
+        if (empty($this->admins)) {
             return null;
         }
         $this->adminIds = [];
-        if(is_array($this->admins)) {
+        if (is_array($this->admins)) {
             foreach($this->admins as $p){
                 if(is_integer($p)){
                     $this->adminIds[] = $p;
@@ -587,14 +614,14 @@ class MyMessages extends Component {
                     $this->adminIds = array_merge($this->adminIds, $this->getUsersByRoles($p));
                 }
             }
-        }elseif(is_integer($this->admins)) {
+        } elseif(is_integer($this->admins)) {
             $this->adminIds[] = $this->admins;
-        }elseif(is_string($this->admins)){
+        } elseif(is_string($this->admins)){
             $this->adminIds = array_merge($this->adminIds, $this->getUsersByRoles($this->admins));
         }
         $return = array_unique($this->adminIds);
         $return = array_filter($return);
-        if(empty($return) || !count($return)){
+        if (empty($return) || !count($return)){
             throw new ExceptionMessages('Not found admins.');
         }
         $this->adminIds = $return;
@@ -619,5 +646,13 @@ class MyMessages extends Component {
         return $model;
     }
 
+
+    /**
+     * @return \yii\db\Connection
+     */
+    protected function getDb()
+    {
+        return Messages::getDb();
+    }
 
 }

@@ -8,8 +8,10 @@
 
 namespace vision\messages\assets;
 
+use \yii\web\AssetBundle;
 
-class BaseMessageAssets extends \yii\web\AssetBundle {
+
+class BaseMessageAssets extends AssetBundle {
 
     public $sourcePath = '@vendor/vision/yii2-private-messages/web';
 

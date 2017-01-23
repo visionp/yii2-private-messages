@@ -9,11 +9,6 @@ Private messages
 Возможен режим когда пользователи будут видеть и смогут писать сообщения только указанным администраторам.
 Также возможно в фоне проверять кол-во новых сообщений + их авторов.
 
-скрин 
-http://prntscr.com/8mmqed
- или
-http://prntscr.com/7dt6tf
-
 
 
 Установка
@@ -115,10 +110,6 @@ vision\messages\assets\PrivateMessPoolingAsset
 
 и добавить нужный нам слушатель
 ```
-<?php
-$base_script = "var baseUrlPrivateMessage ='" . \Yii::$app->mymessages->nameController . "';";
-$this->registerJs($base_script, yii\web\View::POS_BEGIN);
-?>
 
 <script>
 var listener = new privateMessPooling();
