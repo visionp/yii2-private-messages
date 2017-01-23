@@ -11,6 +11,7 @@ namespace vision\messages\components;
 use Yii;
 use yii\base\Component;
 use yii\db\ActiveRecord;
+use yii\db\Expression;
 use yii\db\Query;
 use yii\helpers\Html;
 use vision\messages\models\Messages;
@@ -178,12 +179,14 @@ class MyMessages extends Component {
 
 
     /**
+     * @param bool $last_id
      * @return array
      */
-    public function checkMessage(){
+    public function checkMessage($last_id = false){
         $result = $this->getAllUsers();
         return array_filter($result, function($arr) { return $arr['cnt_mess'] > 0 ;});
     }
+
 
     /**
      * Method to getAllMessages.
@@ -406,25 +409,43 @@ class MyMessages extends Component {
     public function getAllUsers() {
         $table_name = Messages::tableName();
 
-        $sql = "select usr.id, usr.$this->attributeNameUser as $this->attributeNameUser, msg.cnt as cnt_mess ";
-        $sql .= "from $this->userTableName as usr ";
-        $sql .= "left join ";
-        $sql .= "(select from_id, count(id) as cnt from $table_name where status = 1 and whom_id = :user_id GROUP by from_id) as msg ON usr.id = msg.from_id ";
-        $sql .= " where usr.id != :user_id ";
+        $subQuery = (new Query())
+            ->select([
+                'from_id',
+                'cnt' => new Expression('count(id)')
+            ])
+            ->from($table_name)
+            ->where([
+                'status' => 1,
+                'whom_id' => $this->getIdCurrentUser()
+            ])
+            ->groupBy([
+                'from_id'
+            ]);
+
+        $query = (new Query())
+            ->select([
+                'usr.id',
+                $this->attributeNameUser => 'usr.' . $this->attributeNameUser,
+                'cnt_mess' => 'msg.cnt'
+            ])
+            ->from(['usr' => $this->userTableName])
+            ->leftJoin(['msg' => $subQuery], 'usr.id = msg.from_id')
+            ->where([
+                '!=', 'usr.id', $this->getIdCurrentUser()
+            ])
+            ->orderBy([
+                'msg.cnt' => SORT_DESC,
+                'usr.' . $this->attributeNameUser => SORT_DESC
+            ]);
 
         if($this->admins && !in_array(\Yii::$app->user->id, $this->getAdminIds())) {
-            $sql .= " AND usr.id IN (" . implode(',', $this->adminIds) . ") ";
+            $query->andWhere([
+                'in', 'usr.id', $this->adminIds
+            ]);
         }
 
-        $sql .= " Order by msg.cnt DESC, usr.$this->attributeNameUser ";
-
-        $connection = \Yii::$app->db;
-        $model = $connection->createCommand($sql);
-        $model->bindValue(':user_id', $this->getIdCurrentUser());
-
-        $users = $model->queryAll();
-
-        return $users;
+        return $query->all();
     }
 
 

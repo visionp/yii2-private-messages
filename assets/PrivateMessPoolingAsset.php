@@ -9,6 +9,8 @@
 namespace vision\messages\assets;
 
 
+use yii\web\View;
+
 class PrivateMessPoolingAsset extends BaseMessageAssets {
 
     public $js = [
@@ -18,5 +20,18 @@ class PrivateMessPoolingAsset extends BaseMessageAssets {
     public $depends = [
         'yii\web\JqueryAsset'
     ];
+
+
+    /**
+     * Registers this asset bundle with a view.
+     * @param View $view the view to be registered with
+     * @return static the registered asset bundle instance
+     */
+    public static function register($view)
+    {
+        $view->registerJs('alert(\'ok\');');
+        return self::register($view);
+    }
+
 
 } 

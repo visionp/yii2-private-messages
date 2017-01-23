@@ -136,7 +136,7 @@ class MessageApiAction extends Action {
      */
     protected function pooling() {
         $last_id = \Yii::$app->request->get('last_id', false);
-        $data    = \Yii::$app->mymessages->checkMessage($last_id);
+        $data    = $this->getMessageComponent()->checkMessage($last_id);
         return $data;
     }
 

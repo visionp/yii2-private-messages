@@ -13,6 +13,7 @@ var privateMessPooling = (function() {
         return protocol + '//' + host + '/' + baseUrlPrivateMessage  + '/private-messages';
     }
 
+
     return function(max_id) {
         if(di != false) {
             return di;
@@ -107,6 +108,53 @@ var privateMessPooling = (function() {
                 }
             }
         };
+
         return self;
     };
 })();
+
+var notificationSender = {
+    dir:'auto',
+    icon:'',
+    lastTitle: '',
+    lastMessage: '',
+    lastNotification: false,
+    send: function(title, message){
+        this.lastTitle = title;
+        this.lastMessage = message;
+        if(this.permission()){
+            this.lastNotification = new Notification(title,
+                { body:message, dir:this.dir, icon:this.icon }
+            );
+        }
+    },
+    permission:  function(){
+        if (!("Notification" in window)) {
+            return false;
+        } else if(Notification.permission === "granted"){
+            return true;
+        } else if(Notification.permission !== 'denied'){
+            var self = this;
+            Notification.requestPermission(function (permission) {
+                if (permission === "granted") {
+                    self.repeat();
+                }
+                return false;
+            });
+        }
+    },
+    repeat: function(){
+        this.send(this.lastTitle, this.lastMessage);
+    },
+
+    showNotification: function(response) {
+        if(!response.data) {
+            return false;
+        }
+        var self = this;
+        response.data.forEach(function(item, i, arr) {
+            self.send('New messages', item['cnt_mess'] + ' messages from ' + item['username']);
+        });
+    }
+};
+
