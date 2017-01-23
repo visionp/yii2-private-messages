@@ -29,7 +29,6 @@ class PrivateMessPoolingAsset extends BaseMessageAssets {
      */
     public static function register($view)
     {
-        $view->registerJs('alert(\'ok\');');
         return self::register($view);
     }
 
