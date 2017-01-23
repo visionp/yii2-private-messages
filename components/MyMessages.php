@@ -13,6 +13,7 @@ use yii\base\Component;
 use yii\db\ActiveRecord;
 use yii\db\Expression;
 use yii\db\Query;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use vision\messages\models\Messages;
 use vision\messages\exceptions\ExceptionMessages;
@@ -126,17 +127,16 @@ class MyMessages extends Component {
      * @return array
      */
     protected function _getSystemMess($user_id, $only_new = false) {
-        $messages = new \yii\db\Query();
-        $messages
+        $messages = (new Query())
             ->select([
                 'usr.id',
-                "usr.{$this->attributeNameUser}",
+                "usr" => $this->attributeNameUser,
                 'usr.email',
                 'm.message',
-                'FROM_UNIXTIME(m.created_at, "%d-%m-%Y %H:%i") as created_at'
+                'm.created_at'
             ])
-            ->from("{$this->userTableName} as usr")
-            ->leftJoin('messages as m', 'usr.id = m.whom_id')
+            ->from(['usr' => $this->userTableName])
+            ->leftJoin(['m' => Messages::tableName()], 'usr.id = m.whom_id')
             ->where([
                 'm.from_id' => null,
                 'usr.id'=> $user_id
@@ -146,7 +146,13 @@ class MyMessages extends Component {
             $messages->andWhere(['m.status' => 1]);
         }
 
-        return $messages->all();
+
+        return array_map(function ($item){
+            $item['created_at'] = \DateTime::createFromFormat('U', $item['created_at'])->format('d-m-Y H-i-s');
+            return $item;
+        },
+            $messages->all()
+        );
     }
 
 
@@ -265,7 +271,7 @@ class MyMessages extends Component {
         $model = new Messages();
         $model->from_id = $this->getIdCurrentUser();
         $model->whom_id = $whom_id;
-        $model->message = \yii\helpers\Html::encode($message);
+        $model->message = Html::encode($message);
         if($this->enableEmail && $send_email) {
             $this->_sendEmail($whom_id, $message);
         }
