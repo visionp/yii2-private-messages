@@ -13,6 +13,9 @@
     "require": {
         "yiisoft/yii2": "*"
     },
+    "require-dev": {
+        "yiisoft/yii2-codeception": "*"
+    },
     "autoload": {
         "psr-4": {
             "vision\\messages\\": ""
