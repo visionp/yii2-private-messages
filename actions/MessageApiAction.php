@@ -167,7 +167,7 @@ class MessageApiAction extends Action {
      */
     protected function getMessageComponent()
     {
-        return \Yii::$app->mymessages;
+        return MyMessages::getMessageComponent();
     }
 
 }

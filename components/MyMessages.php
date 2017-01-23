@@ -64,6 +64,12 @@ class MyMessages extends Component {
     protected $adminIds = null;
 
 
+    public static function getMessageComponent()
+    {
+        return \Yii::$app->mymessages;
+    }
+
+
     public function init(){
         if(!$this->modelUser) {
             $this->modelUser = \Yii::$app->user->identityClass;
@@ -592,14 +598,14 @@ class MyMessages extends Component {
      * @throws ExceptionMessages
      */
     protected function getAdminIds() {
-        if(!empty($this->adminIds)){
+        if (!empty($this->adminIds)){
             return $this->adminIds;
         }
-        if(empty($this->admins)) {
+        if (empty($this->admins)) {
             return null;
         }
         $this->adminIds = [];
-        if(is_array($this->admins)) {
+        if (is_array($this->admins)) {
             foreach($this->admins as $p){
                 if(is_integer($p)){
                     $this->adminIds[] = $p;
@@ -608,14 +614,14 @@ class MyMessages extends Component {
                     $this->adminIds = array_merge($this->adminIds, $this->getUsersByRoles($p));
                 }
             }
-        }elseif(is_integer($this->admins)) {
+        } elseif(is_integer($this->admins)) {
             $this->adminIds[] = $this->admins;
-        }elseif(is_string($this->admins)){
+        } elseif(is_string($this->admins)){
             $this->adminIds = array_merge($this->adminIds, $this->getUsersByRoles($this->admins));
         }
         $return = array_unique($this->adminIds);
         $return = array_filter($return);
-        if(empty($return) || !count($return)){
+        if (empty($return) || !count($return)){
             throw new ExceptionMessages('Not found admins.');
         }
         $this->adminIds = $return;

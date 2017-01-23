@@ -808,5 +808,5 @@ span.delete-message:hover{
     width: 20px;
     height: 20px;
     background-color: #bd9b51;
-    padding-top: 2px;
+    padding-top: 0;
 }
