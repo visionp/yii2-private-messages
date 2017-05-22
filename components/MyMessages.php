@@ -559,7 +559,7 @@ class MyMessages extends Component {
         $user_id = $this->getIdCurrentUser();
         return array_map(function ($r) use ($user_id) {
             $r['i_am_sender'] = $r['from_id'] == $user_id;
-            $r['created_at'] = \DateTime::createFromFormat('U', $r['created_at'])->format('d-m-Y H-i-s');
+            $r['created_at'] = Yii::$app->formatter->format($r['created_at'], 'datetime');
             return $r;
         },
             $return
